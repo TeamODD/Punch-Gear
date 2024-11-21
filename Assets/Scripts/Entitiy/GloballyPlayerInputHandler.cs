@@ -21,6 +21,7 @@ namespace PunchGear.Entity
             }
             GameObject gameObject = new GameObject("Player Input Handler", typeof(GloballyPlayerInputHandler));
             _instance = gameObject.GetComponent<GloballyPlayerInputHandler>();
+            DontDestroyOnLoad(gameObject);
         }
 
         public static GloballyPlayerInputHandler Instance => _instance;
@@ -36,12 +37,10 @@ namespace PunchGear.Entity
                 throw new InvalidOperationException("Mouse not detected.");
             }
             Debug.Log("Player Input Handler initialized");
-            _keyCodeInputPool.Clear();
         }
 
         private void OnDisable()
         {
-            _keyCodeInputPool.Clear();
             _keyboardInputActions.Clear();
             _mouseInputActions.Clear();
         }
