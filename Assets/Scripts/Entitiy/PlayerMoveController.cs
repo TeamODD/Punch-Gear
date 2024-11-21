@@ -6,6 +6,7 @@ namespace PunchGear.Entity
     public class PlayerMoveController : MonoBehaviour
     {
         private static PlayerMoveController _instance;
+
         private GloballyPlayerInputHandler _globallyPlayerInputHandler;
 
         [RuntimeInitializeOnLoadMethod]
