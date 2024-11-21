@@ -3,7 +3,7 @@ namespace PunchGear.Entity
     public delegate void HealthChangeDelegate(int previousHealthPoint, int currentHealthPoint);
 
 
-    public interface IHeathHolder : IEntity
+    public interface IHealthHolder : IEntity
     {
         public int Health { get; set; }
 
