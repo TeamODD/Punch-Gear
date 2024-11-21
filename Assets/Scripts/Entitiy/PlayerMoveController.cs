@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEngine;
 
 namespace PunchGear.Entity
@@ -25,6 +26,7 @@ namespace PunchGear.Entity
         {
             _globallyPlayerInputHandler = GloballyPlayerInputHandler.Instance;
             _globallyPlayerInputHandler.AddAction(new KeyboardInputAction());
+            _globallyPlayerInputHandler.AddAction(new MouseInputAction());
             Debug.Log("Keyboard action attached");
         }
 
@@ -39,6 +41,21 @@ namespace PunchGear.Entity
                 if (keyCodes.Contains(KeyCode.S))
                 {
                     Debug.Log("S key pressed");
+                }
+            }
+        }
+
+        private class MouseInputAction : IMouseInputAction
+        {
+            public void OnMouseDown(MouseInputs inputs)
+            {
+                if (inputs.HasFlag(MouseInputs.Left))
+                {
+                    Debug.Log("Left button clicked");
+                }
+                if (inputs.HasFlag(MouseInputs.Right))
+                {
+                    Debug.Log("Right button clicked");
                 }
             }
         }

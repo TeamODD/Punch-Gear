@@ -3,10 +3,24 @@ using UnityEngine;
 
 namespace PunchGear.Entity
 {
-    public class Player : MonoBehaviour
+    public class Player : MonoBehaviour, IHealthHolder
     {
         [field: SerializeField]
         public Weapon Weapon { get; private set; }
+
+        private int _healthPoint;
+
+        public int Health
+        {
+            get => _healthPoint;
+            set
+            {
+                int previous = _healthPoint;
+                _healthPoint = value;
+                OnHealthChange?.Invoke(previous, _healthPoint);
+            }
+        }
+
 
         private void Awake()
         {
@@ -15,5 +29,7 @@ namespace PunchGear.Entity
                 throw new NullReferenceException("Weapon is not attached.");
             }
         }
+
+        public event HealthChangeDelegate OnHealthChange;
     }
 }
