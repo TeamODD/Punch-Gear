@@ -19,7 +19,7 @@ namespace PunchGear
         public float normal = 1.0f;
         public float fast = 0.8f;
         public float duration = 1f;
-        public float term = 0.5f;
+        public float term = 1.5f;
 
         private void Start()
         {

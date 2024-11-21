@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 namespace PunchGear
 {
@@ -10,8 +10,8 @@ namespace PunchGear
         void Start()
         {
             rb = this.GetComponent<Rigidbody2D>();
-            rb.AddForce(Vector2.left * power); //¾Æ´Ò ¼öµµ ÀÖÀ½
-            // ´ëÃæ µî¼Óµµ·Î ¹ß»çµÇ±â
+            rb.AddForce(Vector2.left * power); //ì•„ë‹ ìˆ˜ë„ ìˆìŒ
+            // ëŒ€ì¶© ë“±ì†ë„ë¡œ ë°œì‚¬ë˜ê¸°
             Destroy(this.gameObject, removeTime);
         }
     }
