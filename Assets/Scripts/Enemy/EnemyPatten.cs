@@ -7,6 +7,8 @@ namespace PunchGear
 {
     public class EnemyPatten : MonoBehaviour
     {
+        public GameObject bullet;
+        public GameObject spawnPosition;
         private Vector3 vel = Vector3.zero;
         public int height = 4; // 위아래 위치, 임시 세팅
         private bool pos = true;
@@ -17,11 +19,11 @@ namespace PunchGear
         public float normal = 1.0f;
         public float fast = 0.8f;
         public float duration = 1f;
+        public float term = 0.5f;
 
-        
-        private void Update()
+        private void Start()
         {
-
+            StartCoroutine(patten());
         }
 
         public IEnumerator transPos() // 위치 반전 기계 에디션
@@ -58,49 +60,76 @@ namespace PunchGear
 
         private IEnumerator launch(float speed)
         {
+            Instantiate(bullet, spawnPosition.transform.position, Quaternion.identity);
             //대충 소환
             yield return new WaitForSeconds(speed); // 시간 지연
         }
 
-        // 발사(보통) > 방향 전환 > 발사(보통) > 방향 전환 > 발사(보통)
-
-        // 이후 패턴 세분화
-        // 패턴 1호기 위치 변경
-        // 패턴 2호기 느리게 발사
-        // 패턴 3호기 일반 발사
-        // 패턴 4호기 빠르게 발사
-
-        // 대충 네 개 섞어서 확률로 대충 돌리면 미친 패턴이 나오지 않을까
-        // 패턴 텀은 2~4호기로 결정
-
-        // 패턴이 여러개로 늘어나면 너무 두렵다..
-        // 흚
-        private void Patten1()
+        IEnumerator patten()
         {
-            // 원래 자리(아래)
-            for (int i = 0; i < 3; i++)
+            while (true)
             {
-                // 대충 소환
+                int randomInt = Random.Range(0, 5);
 
-                // 위지 변환
-                launch(slow);
-                // 약간의 텀이 좀 필요
-            } // 두려워진다. 내 코드를 보지말아줘!!!!
-
-            // 부드러운 움직임 추가?
-            // 위로 힘을 줘서, 특정 위치에 갈 때까지 이동? 감속과 가속? 등속? 흚
+                switch(randomInt)
+                {
+                    case 0: yield return patten1(); break;
+                    case 1: yield return patten2(); break;
+                    case 2: yield return patten3(); break;
+                    case 3: yield return patten4(); break;
+                    case 4: yield return patten5(); break;
+                }
+                yield return new WaitForSeconds(term);
+            }
         }
 
-        // 적 패턴 만들기
+        IEnumerator patten1() // 패턴 1호기
+        {
+            yield return StartCoroutine(launch(normal));
+            yield return StartCoroutine(transPos());
+            yield return StartCoroutine(launch(normal));
+            yield return StartCoroutine(transPos());
+            yield return StartCoroutine(launch(normal));
+        }
 
-        // 패턴 1호기
-        // 아래 위 아래 (느림)
+        IEnumerator patten2() // 패턴 2호기
+        {
+            yield return StartCoroutine(launch(fast));
+            yield return StartCoroutine(launch(fast));
+            yield return StartCoroutine(launch(fast));
+            yield return StartCoroutine(launch(fast));
+            yield return StartCoroutine(transPos());
+            yield return StartCoroutine(launch(slow));
+            yield return StartCoroutine(launch(slow));
+        }
 
-        // 패턴 2호기
-        // 아래 * 4 (빠르게)
-        // 위 * 2
+        IEnumerator patten3() // 패턴 3호기
+        {
+            yield return StartCoroutine(launch(normal));
+            yield return StartCoroutine(launch(fast));
+        }
 
-        // 패턴 3호기
-        // 아래 * 2(보통)
+        IEnumerator patten4() // 패턴 4호기
+        {
+            yield return StartCoroutine(transPos());
+            yield return StartCoroutine(launch(fast));
+            yield return StartCoroutine(launch(normal));
+        }
+
+        IEnumerator patten5() // 패턴 5호기
+        {
+            for(int i = 0; i < 5; i++)
+            {
+                int randomInt = Random.Range(0, 4);
+
+                switch (randomInt)
+                {
+                    case 0: yield return transPos(); break;
+                    case 1: yield return launch(slow); break;
+                    case 2: yield return launch(normal); break;
+                    case 3: yield return launch(fast); break;
+                }
+            }
+        }
     }
 }
