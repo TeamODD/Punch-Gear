@@ -1,11 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UnityEngine.Rendering;
-using TMPro;
+using System.Collections.Generic;
 
-namespace PunchGear
+namespace PunchGear.Enemy
 {
-    public class EnemyPatten : MonoBehaviour
+    public class EnemyPattern : MonoBehaviour
     {
         public GameObject bullet;
         public GameObject spawnPosition;
@@ -21,12 +20,23 @@ namespace PunchGear
         public float duration = 1f;
         public float term = 1.5f;
 
-        private void Start()
+        private List<IAttackPattern> _attackPatterns = new List<IAttackPattern>();
+
+        private void Awake()
         {
-            StartCoroutine(patten());
+            _attackPatterns.Add(new AttackPattern1(this));
+            _attackPatterns.Add(new AttackPattern2(this));
+            _attackPatterns.Add(new AttackPattern3(this));
+            _attackPatterns.Add(new AttackPattern4(this));
+            _attackPatterns.Add(new AttackPattern5(this));
         }
 
-        public IEnumerator transPos() // 위치 반전 기계 에디션
+        private void Start()
+        {
+            StartCoroutine(Pattern());
+        }
+
+        public IEnumerator TransPos() // 위치 반전 기계 에디션
         {
             isMoving = true; // 이동 시작
 
@@ -58,77 +68,21 @@ namespace PunchGear
             isMoving = false; // 이동 완료
         }
 
-        private IEnumerator launch(float speed)
+        public IEnumerator Launch(float speed)
         {
             Instantiate(bullet, spawnPosition.transform.position, Quaternion.identity);
             //대충 소환
             yield return new WaitForSeconds(speed); // 시간 지연
         }
 
-        IEnumerator patten()
+        IEnumerator Pattern()
         {
             while (true)
             {
-                int randomInt = Random.Range(0, 5);
-
-                switch(randomInt)
-                {
-                    case 0: yield return patten1(); break;
-                    case 1: yield return patten2(); break;
-                    case 2: yield return patten3(); break;
-                    case 3: yield return patten4(); break;
-                    case 4: yield return patten5(); break;
-                }
+                int randomInt = Random.Range(0, _attackPatterns.Count);
+                IAttackPattern attackPattern = _attackPatterns[randomInt];
+                yield return attackPattern.GetPatternCoroutine();
                 yield return new WaitForSeconds(term);
-            }
-        }
-
-        IEnumerator patten1() // 패턴 1호기
-        {
-            yield return StartCoroutine(launch(normal));
-            yield return StartCoroutine(transPos());
-            yield return StartCoroutine(launch(normal));
-            yield return StartCoroutine(transPos());
-            yield return StartCoroutine(launch(normal));
-        }
-
-        IEnumerator patten2() // 패턴 2호기
-        {
-            yield return StartCoroutine(launch(fast));
-            yield return StartCoroutine(launch(fast));
-            yield return StartCoroutine(launch(fast));
-            yield return StartCoroutine(launch(fast));
-            yield return StartCoroutine(transPos());
-            yield return StartCoroutine(launch(slow));
-            yield return StartCoroutine(launch(slow));
-        }
-
-        IEnumerator patten3() // 패턴 3호기
-        {
-            yield return StartCoroutine(launch(normal));
-            yield return StartCoroutine(launch(fast));
-        }
-
-        IEnumerator patten4() // 패턴 4호기
-        {
-            yield return StartCoroutine(transPos());
-            yield return StartCoroutine(launch(fast));
-            yield return StartCoroutine(launch(normal));
-        }
-
-        IEnumerator patten5() // 패턴 5호기
-        {
-            for(int i = 0; i < 5; i++)
-            {
-                int randomInt = Random.Range(0, 4);
-
-                switch (randomInt)
-                {
-                    case 0: yield return transPos(); break;
-                    case 1: yield return launch(slow); break;
-                    case 2: yield return launch(normal); break;
-                    case 3: yield return launch(fast); break;
-                }
             }
         }
     }

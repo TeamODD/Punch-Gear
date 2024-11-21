@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace PunchGear
+namespace PunchGear.Enemy
 {
     public class Bullet : MonoBehaviour
     {
