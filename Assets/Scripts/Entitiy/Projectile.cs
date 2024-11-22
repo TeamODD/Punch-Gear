@@ -26,6 +26,7 @@ namespace PunchGear.Entity
 
         private void Start()
         {
+            _renderer.sprite = _spriteProfile.DefaultImage;
             // TODO: trace the track
         }
 
