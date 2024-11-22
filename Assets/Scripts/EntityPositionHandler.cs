@@ -13,13 +13,9 @@ namespace PunchGear
         [field: SerializeField]
         public EntityPositionProfile BottomPositionProfile { get; private set; }
 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void Initialize()
         {
-            if (_instance)
-            {
-                return;
-            }
             _instance = FindFirstObjectByType<EntityPositionHandler>();
             if (!_instance)
             {
@@ -50,6 +46,19 @@ namespace PunchGear
             }
         }
 
+        public EntityPositionProfile this[EntityPosition position]
+        {
+            get
+            {
+                return position switch
+                {
+                    EntityPosition.Top => TopPositionProfile,
+                    EntityPosition.Bottom => BottomPositionProfile,
+                    _ => throw new InvalidOperationException("Undefined value")
+                };
+            }
+        }
+
         public void SetPosition(MonoBehaviour monoBehaviour, EntityPosition position)
         {
             SetPosition(monoBehaviour.transform, position);
@@ -75,8 +84,8 @@ namespace PunchGear
         {
             return position switch
             {
-                EntityPosition.Bottom => TopPositionProfile,
-                EntityPosition.Top => BottomPositionProfile,
+                EntityPosition.Bottom => BottomPositionProfile,
+                EntityPosition.Top => TopPositionProfile,
                 _ => throw new InvalidOperationException("Undefined value"),
             };
         }
