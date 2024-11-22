@@ -70,11 +70,11 @@ namespace PunchGear.Entity
                 {
                     return;
                 }
+                Debug.Log("Projectile entered the assembly point: " + nameof(Position));
                 _canPlayerManipulate = true;
             }
             if (target.CompareTag("Nobility"))
             {
-                Debug.Log(_disassembled);
                 if (!_disassembled && _chaseEnemyAnimationCoroutine != null)
                 {
                     StopCoroutine(_chaseEnemyAnimationCoroutine);
@@ -103,6 +103,7 @@ namespace PunchGear.Entity
             }
             _disassembled = false;
             _renderer.sprite = _spriteProfile.AssembleImage;
+            Debug.Log("Successfully assembled");
             ChaseEnemy();
         }
 
@@ -118,6 +119,7 @@ namespace PunchGear.Entity
             _rigidbody.bodyType = RigidbodyType2D.Dynamic;
             _rigidbody.AddForceY(10f, ForceMode2D.Impulse);
             _rigidbody.gravityScale = 2f;
+            Debug.Log("Successfully disassembled");
             // TODO: awaits player's assembly or explode
         }
 
