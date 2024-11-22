@@ -236,6 +236,7 @@ GameObject:
   - component: {fileID: 572161635}
   - component: {fileID: 572161636}
   - component: {fileID: 572161637}
+  - component: {fileID: 572161638}
   m_Layer: 0
   m_Name: Projectile Launcher
   m_TagString: Untagged
@@ -333,6 +334,19 @@ MonoBehaviour:
   fast: 0.8
   duration: 1
   term: 1.5
+--- !u!114 &572161638
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 572161634}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e14a04cc9cc24a7f9882842d12ffa5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _healthPoint: 0
 --- !u!1 &1296933944
 GameObject:
   m_ObjectHideFlags: 0
