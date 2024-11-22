@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using PunchGear.Entity;
 
 namespace PunchGear.Enemy
 {
@@ -85,7 +86,9 @@ namespace PunchGear.Enemy
 
         public IEnumerator Launch(float speed)
         {
-            Instantiate(bullet, spawnPosition.transform.position, Quaternion.identity);
+            GameObject bulletObject = Instantiate(bullet, spawnPosition.transform.position, Quaternion.identity);
+            Projectile projectile = bulletObject.GetComponent<Projectile>();
+            projectile.Position = _position;
             yield return new WaitForSeconds(speed); // 시간 지연
         }
 
