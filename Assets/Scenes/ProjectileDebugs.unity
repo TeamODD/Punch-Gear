@@ -316,11 +316,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <TopPositionProfile>k__BackingField:
-    <Position>k__BackingField: 0
-    <Height>k__BackingField: -1.15
-  <BottomPositionProfile>k__BackingField:
     <Position>k__BackingField: 1
     <Height>k__BackingField: 2.85
+  <BottomPositionProfile>k__BackingField:
+    <Position>k__BackingField: 0
+    <Height>k__BackingField: -1.15
 --- !u!1 &572161634
 GameObject:
   m_ObjectHideFlags: 0
@@ -430,6 +430,7 @@ MonoBehaviour:
   fast: 0.8
   duration: 1
   term: 1.5
+  smoothTime: 0.2
 --- !u!114 &572161638
 MonoBehaviour:
   m_ObjectHideFlags: 0
