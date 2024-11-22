@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5495246162141796214}
   - component: {fileID: 2757875681172613768}
   - component: {fileID: 2460746856770225903}
+  - component: {fileID: -1411184715368209294}
   m_Layer: 0
   m_Name: bullet
   m_TagString: Untagged
@@ -29,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 7153568714726984686}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.36, y: -0.06, z: 0}
+  m_LocalPosition: {x: 2.36, y: -1.15, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -177,3 +178,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   power: 300
   removeTime: 3
+--- !u!114 &-1411184715368209294
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7153568714726984686}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ccab060a79cd6342a5ad964ec88779e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _spriteProfile:
+    <DefaultImage>k__BackingField: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+    <AssembleImage>k__BackingField: {fileID: -712631045867808456, guid: b670ab75dde984907b8570040daa08c5, type: 3}
+    <DisassembleImage>k__BackingField: {fileID: 7482667652216324306, guid: 75f5f34dc1b5347e0b8351032682f224, type: 3}
