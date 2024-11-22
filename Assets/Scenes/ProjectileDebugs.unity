@@ -131,6 +131,7 @@ GameObject:
   - component: {fileID: 182928521}
   - component: {fileID: 182928523}
   - component: {fileID: 182928524}
+  - component: {fileID: 182928525}
   m_Layer: 0
   m_Name: Top Assembly Point
   m_TagString: GameController
@@ -271,6 +272,19 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 0.5
+--- !u!114 &182928525
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 182928519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f79a79b4865147a49e9e008f7871d11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <Position>k__BackingField: 1
 --- !u!1 &247390342
 GameObject:
   m_ObjectHideFlags: 0
@@ -456,6 +470,7 @@ GameObject:
   - component: {fileID: 1296933946}
   - component: {fileID: 1296933948}
   - component: {fileID: 1296933949}
+  - component: {fileID: 1296933950}
   m_Layer: 0
   m_Name: Bottom Assembly Point
   m_TagString: GameController
@@ -596,6 +611,19 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 0.5
+--- !u!114 &1296933950
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1296933944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f79a79b4865147a49e9e008f7871d11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <Position>k__BackingField: 0
 --- !u!1 &1884325619
 GameObject:
   m_ObjectHideFlags: 0
