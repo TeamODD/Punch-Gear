@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,6 +10,9 @@ namespace PunchGear.Entity
         private static PlayerMoveController _instance;
 
         private GloballyPlayerInputHandler _globallyPlayerInputHandler;
+
+        [field: SerializeField]
+        public EntityPosition Position { get; internal set; }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Initialize()
@@ -32,14 +36,14 @@ namespace PunchGear.Entity
 
         private void Start()
         {
-            EntityPositionHandler.Instance.SetPosition(this, EntityPosition.Bottom);
+            Position = EntityPosition.Bottom;
+            EntityPositionHandler.Instance.SetPosition(this, Position);
         }
 
         private class KeyboardInputAction : IKeyboardInputAction
         {
             private readonly PlayerMoveController _controller;
 
-            private EntityPosition _lastPosition;
             private Coroutine _smoothDampPositionCoroutine;
 
             public KeyboardInputAction(PlayerMoveController controller)
@@ -49,20 +53,21 @@ namespace PunchGear.Entity
 
             public void OnKeyDown(IList<KeyCode> keyCodes)
             {
+                EntityPosition lastPosition = _controller.Position;
                 if (keyCodes.Contains(KeyCode.W))
                 {
-                    if (_smoothDampPositionCoroutine == null && _lastPosition == EntityPosition.Bottom)
+                    if (_smoothDampPositionCoroutine == null && lastPosition == EntityPosition.Bottom)
                     {
                         _smoothDampPositionCoroutine = _controller.StartCoroutine(StartAnimation(EntityPosition.Top));
-                        _lastPosition = EntityPosition.Top;
+                        _controller.Position = EntityPosition.Top;
                     }
                 }
                 if (keyCodes.Contains(KeyCode.S))
                 {
-                    if (_smoothDampPositionCoroutine == null && _lastPosition == EntityPosition.Top)
+                    if (_smoothDampPositionCoroutine == null && lastPosition == EntityPosition.Top)
                     {
                         _smoothDampPositionCoroutine = _controller.StartCoroutine(StartAnimation(EntityPosition.Bottom));
-                        _lastPosition = EntityPosition.Bottom;
+                        _controller.Position = EntityPosition.Bottom;
                     }
                 }
             }

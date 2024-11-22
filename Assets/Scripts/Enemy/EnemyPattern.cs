@@ -25,6 +25,7 @@ namespace PunchGear.Enemy
         public float smoothTime = 0.2f;
 
         private EntityPosition _position;
+        private Player _player;
 
         private readonly List<IAttackPattern> _attackPatterns = new List<IAttackPattern>();
 
@@ -35,6 +36,13 @@ namespace PunchGear.Enemy
             _attackPatterns.Add(new AttackPattern3(this, normal, fast));
             _attackPatterns.Add(new AttackPattern4(this, normal, fast));
             _attackPatterns.Add(new AttackPattern5(this, slow, normal, fast));
+
+            _player = FindFirstObjectByType<Player>();
+            if (_player == null)
+            {
+                throw new NullReferenceException("Cannot find any player component");
+            }
+            Debug.Log("Player detected");
         }
 
         private void Start()
@@ -71,7 +79,8 @@ namespace PunchGear.Enemy
             GameObject bulletObject = Instantiate(bullet, spawnPosition.transform.position, Quaternion.identity);
             Projectile projectile = bulletObject.GetComponent<Projectile>();
             projectile.Position = _position;
-            projectile.Origin = gameObject;
+            projectile.EnemyOrigin = gameObject;
+            projectile.Player = _player;
             yield return new WaitForSeconds(speed); // 시간 지연
         }
 
