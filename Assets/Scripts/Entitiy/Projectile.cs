@@ -6,7 +6,6 @@ namespace PunchGear.Entity
 {
     public class Projectile : MonoBehaviour, IProjectile
     {
-
         [SerializeField]
         private ProjectileSpriteProfile _spriteProfile;
 
@@ -62,7 +61,7 @@ namespace PunchGear.Entity
             if (target.CompareTag("GameController"))
             {
                 _canPlayerManipulate = false;
-                StartCoroutine(StartBlinkAnimationCoroutine());
+                // StartCoroutine(StartBlinkAnimationCoroutine());
             }
         }
 
@@ -87,7 +86,8 @@ namespace PunchGear.Entity
             _renderer.sprite = _spriteProfile.DisassembleImage;
             _rigidbody.linearVelocity = Vector2.zero;
             _rigidbody.bodyType = RigidbodyType2D.Dynamic;
-            _rigidbody.AddForceY(1, ForceMode2D.Impulse);
+            _rigidbody.AddForceY(10f, ForceMode2D.Impulse);
+            _rigidbody.gravityScale = 2f;
             // TODO: awaits player's assembly or explode
         }
 
