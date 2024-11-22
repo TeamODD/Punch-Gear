@@ -30,7 +30,7 @@ namespace PunchGear.Entity
         {
             _globallyPlayerInputHandler = GloballyPlayerInputHandler.Instance;
             _globallyPlayerInputHandler.AddAction(new KeyboardInputAction(this));
-            _globallyPlayerInputHandler.AddAction(new MouseInputAction());
+            // _globallyPlayerInputHandler.AddAction(new MouseInputAction());
             Debug.Log("Keyboard action attached");
         }
 

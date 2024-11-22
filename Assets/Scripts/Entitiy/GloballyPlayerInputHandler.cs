@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace PunchGear.Entity
 {
@@ -72,15 +73,18 @@ namespace PunchGear.Entity
         private MouseInputs FetchMouseInputs()
         {
             MouseInputs inputs = MouseInputs.None;
-            if (Input.GetMouseButtonDown(0))
+            Mouse mouse = Mouse.current;
+            mouse.leftButton.pressPoint = 0.01f;
+            mouse.rightButton.pressPoint = 0.01f;
+            if (mouse.leftButton.isPressed)
             {
                 inputs |= MouseInputs.Left;
             }
-            if (Input.GetMouseButtonDown(1))
+            if (mouse.rightButton.isPressed)
             {
                 inputs |= MouseInputs.Right;
             }
-            if (Input.GetMouseButtonDown(2))
+            if (mouse.middleButton.isPressed)
             {
                 inputs |= MouseInputs.Scroll;
             }
