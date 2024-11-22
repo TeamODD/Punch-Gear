@@ -7,7 +7,7 @@ namespace PunchGear.Enemy
 {
     public class EnemyHealth : MonoBehaviour
     {
-        public Scenes.TotalManager totalManager;
+        public Scenes.GameManager totalManager;
         private float HealthBarLength; // 최대 채력 길이
         private float scaleControl; // 이건 지금부터 스케일 조정기여
         private float positionControl; // 너는 지금부터 위치 조정기여
@@ -23,15 +23,6 @@ namespace PunchGear.Enemy
             positionControl = scaleControl * 0.5f;
 
             StartCoroutine(HealthHandler());
-        }
-        public void HealthHandler1() // 타격받을때마다 이거 부르면 됨
-        {
-            Vector3 newScale = transform.localScale;
-            Vector3 newPosition = transform.localPosition;
-            newScale.x -= scaleControl;
-            newPosition.x -= positionControl;
-            transform.localScale = newScale;
-            transform.localPosition = newPosition;
         }
 
         public IEnumerator HealthHandler()
