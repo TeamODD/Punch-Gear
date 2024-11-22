@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using UnityEngine;
 
 namespace PunchGear.Entity
@@ -10,7 +9,7 @@ namespace PunchGear.Entity
 
         private GloballyPlayerInputHandler _globallyPlayerInputHandler;
 
-        [RuntimeInitializeOnLoadMethod]
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Initialize()
         {
             if (_instance)
@@ -22,7 +21,7 @@ namespace PunchGear.Entity
             Debug.Log("Player Move Controller initialized");
         }
 
-        private void Start()
+        private void Awake()
         {
             _globallyPlayerInputHandler = GloballyPlayerInputHandler.Instance;
             _globallyPlayerInputHandler.AddAction(new KeyboardInputAction());
