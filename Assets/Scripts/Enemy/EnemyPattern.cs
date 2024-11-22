@@ -89,6 +89,7 @@ namespace PunchGear.Enemy
             GameObject bulletObject = Instantiate(bullet, spawnPosition.transform.position, Quaternion.identity);
             Projectile projectile = bulletObject.GetComponent<Projectile>();
             projectile.Position = _position;
+            projectile.Origin = gameObject;
             yield return new WaitForSeconds(speed); // 시간 지연
         }
 
