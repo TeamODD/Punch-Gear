@@ -61,25 +61,7 @@ namespace PunchGear.Enemy
                 EntityPosition.Top => EntityPosition.Bottom,
                 _ => throw new InvalidOperationException("Undefined value")
             };
-            Vector2 targetVector = EntityPositionHandler.Instance[targetPosition].Vector;
-            targetVector.x = transform.position.x;
-            float elapsedTime = 0f;
-            Vector2 velocityVector = Vector2.zero;
-            while (elapsedTime < duration)
-            {
-                // SmoothDamp를 통해 부드럽게 이동
-                transform.position = Vector2.SmoothDamp(
-                    transform.position,
-                    targetVector,
-                    ref velocityVector,
-                    smoothTime // 감속 시간
-                );
-                elapsedTime += Time.deltaTime; // 경과 시간 증가
-                yield return null; // 다음 프레임까지 대기
-            }
-
-            // 이동 완료 후 정확히 목표 위치로 설정
-            EntityPositionHandler.Instance.SetPosition(this, targetPosition);
+            yield return EntityPositionHandler.Instance.SmoothDampPosition(transform, targetPosition, duration, smoothTime);
             _position = targetPosition;
             _isMoving = false;
         }
