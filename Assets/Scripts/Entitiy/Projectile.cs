@@ -1,12 +1,12 @@
 using System;
 using System.Collections;
+using PunchGear.Enemy;
 using UnityEngine;
 
 namespace PunchGear.Entity
 {
     public class Projectile : MonoBehaviour, IProjectile
     {
-
         [SerializeField]
         private ProjectileSpriteProfile _spriteProfile;
 
@@ -14,8 +14,15 @@ namespace PunchGear.Entity
         private SpriteRenderer _renderer;
         private IMouseInputAction _action;
 
+        private Coroutine _chaseEnemyAnimationCoroutine;
+
         private bool _canPlayerManipulate;
         private bool _disassembled;
+
+        [field: SerializeField]
+        public EntityPosition Position { get; set; }
+
+        public GameObject Origin { get; set; }
 
         private void Awake()
         {
@@ -51,9 +58,24 @@ namespace PunchGear.Entity
             GameObject target = collider.gameObject;
             if (target.CompareTag("GameController"))
             {
+                AssemblyPoint assemblyPoint = target.GetComponent<AssemblyPoint>();
+                if (assemblyPoint.Position != Position)
+                {
+                    return;
+                }
                 _canPlayerManipulate = true;
             }
-            Debug.LogFormat("Collider detected: tag {0}, name {1}", target.tag, target.name);
+            if (target.CompareTag("Nobility"))
+            {
+                Debug.Log(_disassembled);
+                if (!_disassembled && _chaseEnemyAnimationCoroutine != null)
+                {
+                    StopCoroutine(_chaseEnemyAnimationCoroutine);
+                    Destroy(gameObject);
+                    EnemyObject enemyObject = Origin.GetComponent<EnemyObject>();
+                    enemyObject.Health -= 1;
+                }
+            }
         }
 
         private void OnTriggerExit2D(Collider2D collider)
@@ -62,7 +84,7 @@ namespace PunchGear.Entity
             if (target.CompareTag("GameController"))
             {
                 _canPlayerManipulate = false;
-                StartCoroutine(StartBlinkAnimationCoroutine());
+                // StartCoroutine(StartBlinkAnimationCoroutine());
             }
         }
 
@@ -74,7 +96,7 @@ namespace PunchGear.Entity
             }
             _disassembled = false;
             _renderer.sprite = _spriteProfile.AssembleImage;
-            // TODO: attacks the enemy
+            ChaseEnemy();
         }
 
         public void Disassemble()
@@ -87,7 +109,8 @@ namespace PunchGear.Entity
             _renderer.sprite = _spriteProfile.DisassembleImage;
             _rigidbody.linearVelocity = Vector2.zero;
             _rigidbody.bodyType = RigidbodyType2D.Dynamic;
-            _rigidbody.AddForceY(1, ForceMode2D.Impulse);
+            _rigidbody.AddForceY(10f, ForceMode2D.Impulse);
+            _rigidbody.gravityScale = 2f;
             // TODO: awaits player's assembly or explode
         }
 
@@ -104,6 +127,31 @@ namespace PunchGear.Entity
                 color.a = 1f;
                 material.color = color;
                 yield return new WaitForSecondsRealtime(0.1f);
+            }
+        }
+
+        private void ChaseEnemy()
+        {
+            _rigidbody.bodyType = RigidbodyType2D.Dynamic;
+            _rigidbody.linearVelocity = Vector2.zero;
+            _rigidbody.gravityScale = 0;
+            _chaseEnemyAnimationCoroutine = StartCoroutine(ChaseEnemyAnimation());
+        }
+
+        private IEnumerator ChaseEnemyAnimation()
+        {
+            float smoothTime = 0.2f;
+            Vector2 velocityVector = Vector2.zero;
+            while (true)
+            {
+                transform.position = Vector2.SmoothDamp(
+                    transform.position,
+                    Origin.transform.position,
+                    ref velocityVector,
+                    smoothTime // 감속 시간
+                );
+                // 
+                yield return null;
             }
         }
 
