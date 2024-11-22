@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace PunchGear.Scenes
@@ -11,18 +11,18 @@ namespace PunchGear.Scenes
 
         private void Start()
         {
-            // ÇÃ·¹ÀÌ¾î Ã¼·Â°ú º¸½º Ã¼·ÂÀ» °¡Á®¿Í¼­ ¹è°æ ÀÌ¹ÌÁö ¹¹ Ãâ·ÂÇÒÁö °áÁ¤
+            // í”Œë ˆì´ì–´ ì²´ë ¥ê³¼ ë³´ìŠ¤ ì²´ë ¥ì„ ê°€ì ¸ì™€ì„œ ë°°ê²½ ì´ë¯¸ì§€ ë­ ì¶œë ¥í• ì§€ ê²°ì •
             SpriteRenderer spriteRenderer = background.GetComponent<SpriteRenderer>();
             spriteRenderer.sprite = totalManager.resultBackground[totalManager.enemyHealth == 0 ? 1 : 0];
         }
 
-        public void EndEvent() //¹ºÁø ¸ğ¸£Áö¸¸ ²ÜÀë 1È£±â ÄÚµå ±Ü¾î¿È
+        public void EndEvent() //ë­”ì§„ ëª¨ë¥´ì§€ë§Œ ê¿€ì¼ 1í˜¸ê¸° ì½”ë“œ ê¸ì–´ì˜´
         {
-            // ¿¡µğÅÍ¿¡¼­ ½ÇÇà ÁßÀÎÁö È®ÀÎ (¿¡µğÅÍ¿¡¼­´Â Á¾·áµÇÁö ¾Ê±â ¶§¹®¿¡ ¸Ş½ÃÁö¸¦ ¶ç¿ò)
+            // ì—ë””í„°ì—ì„œ ì‹¤í–‰ ì¤‘ì¸ì§€ í™•ì¸ (ì—ë””í„°ì—ì„œëŠ” ì¢…ë£Œë˜ì§€ ì•Šê¸° ë•Œë¬¸ì— ë©”ì‹œì§€ë¥¼ ë„ì›€)
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
 #else
-        Application.Quit(); // ½ÇÁ¦ ºôµåµÈ °ÔÀÓ¿¡¼­ ½ÇÇà ½Ã °ÔÀÓÀ» Á¾·á
+        Application.Quit(); // ì‹¤ì œ ë¹Œë“œëœ ê²Œì„ì—ì„œ ì‹¤í–‰ ì‹œ ê²Œì„ì„ ì¢…ë£Œ
 #endif
         }
 
