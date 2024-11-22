@@ -163,7 +163,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!114 &2460746856770225903
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -194,3 +194,4 @@ MonoBehaviour:
     <DefaultImage>k__BackingField: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
     <AssembleImage>k__BackingField: {fileID: -712631045867808456, guid: b670ab75dde984907b8570040daa08c5, type: 3}
     <DisassembleImage>k__BackingField: {fileID: 7482667652216324306, guid: 75f5f34dc1b5347e0b8351032682f224, type: 3}
+  <Position>k__BackingField: 0
