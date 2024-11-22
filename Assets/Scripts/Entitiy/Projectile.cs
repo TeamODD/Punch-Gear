@@ -16,6 +16,9 @@ namespace PunchGear.Entity
         private bool _canPlayerManipulate;
         private bool _disassembled;
 
+        [field: SerializeField]
+        public EntityPosition Position { get; set; }
+
         private void Awake()
         {
             if (_spriteProfile == null)
@@ -50,9 +53,13 @@ namespace PunchGear.Entity
             GameObject target = collider.gameObject;
             if (target.CompareTag("GameController"))
             {
+                AssemblyPoint assemblyPoint = target.GetComponent<AssemblyPoint>();
+                if (assemblyPoint.Position != Position)
+                {
+                    return;
+                }
                 _canPlayerManipulate = true;
             }
-            Debug.LogFormat("Collider detected: tag {0}, name {1}", target.tag, target.name);
         }
 
         private void OnTriggerExit2D(Collider2D collider)
