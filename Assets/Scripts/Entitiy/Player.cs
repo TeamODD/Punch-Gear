@@ -8,6 +8,7 @@ namespace PunchGear.Entity
         [field: SerializeField]
         public Weapon Weapon { get; private set; }
 
+        [SerializeField]
         private int _healthPoint;
 
         public int Health
