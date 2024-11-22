@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,6 +10,9 @@ namespace PunchGear.Entity
         private static PlayerMoveController _instance;
 
         private GloballyPlayerInputHandler _globallyPlayerInputHandler;
+
+        [field: SerializeField]
+        public EntityPosition Position { get; internal set; }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Initialize()
@@ -24,23 +29,57 @@ namespace PunchGear.Entity
         private void Awake()
         {
             _globallyPlayerInputHandler = GloballyPlayerInputHandler.Instance;
-            _globallyPlayerInputHandler.AddAction(new KeyboardInputAction());
+            _globallyPlayerInputHandler.AddAction(new KeyboardInputAction(this));
             _globallyPlayerInputHandler.AddAction(new MouseInputAction());
             Debug.Log("Keyboard action attached");
         }
 
+        private void Start()
+        {
+            Position = EntityPosition.Bottom;
+            EntityPositionHandler.Instance.SetPosition(this, Position);
+        }
+
         private class KeyboardInputAction : IKeyboardInputAction
         {
+            private readonly PlayerMoveController _controller;
+
+            private Coroutine _smoothDampPositionCoroutine;
+
+            public KeyboardInputAction(PlayerMoveController controller)
+            {
+                _controller = controller;
+            }
+
             public void OnKeyDown(IList<KeyCode> keyCodes)
             {
+                EntityPosition lastPosition = _controller.Position;
                 if (keyCodes.Contains(KeyCode.W))
                 {
-                    Debug.Log("W key pressed");
+                    if (_smoothDampPositionCoroutine == null && lastPosition == EntityPosition.Bottom)
+                    {
+                        _smoothDampPositionCoroutine = _controller.StartCoroutine(StartAnimation(EntityPosition.Top));
+                        _controller.Position = EntityPosition.Top;
+                    }
                 }
                 if (keyCodes.Contains(KeyCode.S))
                 {
-                    Debug.Log("S key pressed");
+                    if (_smoothDampPositionCoroutine == null && lastPosition == EntityPosition.Top)
+                    {
+                        _smoothDampPositionCoroutine = _controller.StartCoroutine(StartAnimation(EntityPosition.Bottom));
+                        _controller.Position = EntityPosition.Bottom;
+                    }
                 }
+            }
+
+            private IEnumerator StartAnimation(EntityPosition position)
+            {
+                yield return EntityPositionHandler.Instance.SmoothDampPosition(
+                    _controller.transform,
+                    position,
+                    0.4f,
+                    0.1f);
+                _smoothDampPositionCoroutine = null;
             }
         }
 

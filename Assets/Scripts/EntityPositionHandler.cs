@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 namespace PunchGear
@@ -78,6 +79,29 @@ namespace PunchGear
             Vector2 currentPosition = rigidbody.position;
             currentPosition.y = profile.Height;
             rigidbody.position = currentPosition;
+        }
+
+        public IEnumerator SmoothDampPosition(Transform transform, EntityPosition targetPosition, float duration, float smoothTime)
+        {
+            Vector2 targetVector = this[targetPosition].Vector;
+            targetVector.x = transform.position.x;
+            float elapsedTime = 0f;
+            Vector2 velocityVector = Vector2.zero;
+            while (elapsedTime < duration)
+            {
+                // SmoothDamp를 통해 부드럽게 이동
+                transform.position = Vector2.SmoothDamp(
+                    transform.position,
+                    targetVector,
+                    ref velocityVector,
+                    smoothTime // 감속 시간
+                );
+                elapsedTime += Time.deltaTime; // 경과 시간 증가
+                yield return null; // 다음 프레임까지 대기
+            }
+
+            // 이동 완료 후 정확히 목표 위치로 설정
+            SetPosition(transform, targetPosition);
         }
 
         private EntityPositionProfile GetProfileByPosition(EntityPosition position)

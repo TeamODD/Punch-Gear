@@ -22,7 +22,13 @@ namespace PunchGear.Entity
         [field: SerializeField]
         public EntityPosition Position { get; set; }
 
-        public GameObject Origin { get; set; }
+        [field: SerializeField]
+        public GameObject EnemyOrigin { get; set; }
+
+        [field: SerializeField]
+        public Player Player { get; set; }
+
+        private PlayerMoveController _playerMoveController;
 
         private void Awake()
         {
@@ -45,6 +51,7 @@ namespace PunchGear.Entity
             _renderer.sprite = _spriteProfile.DefaultImage;
             _canPlayerManipulate = false;
             _disassembled = false;
+            _playerMoveController = Player.GetComponent<PlayerMoveController>();
         }
 
         private void OnDisable()
@@ -72,7 +79,7 @@ namespace PunchGear.Entity
                 {
                     StopCoroutine(_chaseEnemyAnimationCoroutine);
                     Destroy(gameObject);
-                    EnemyObject enemyObject = Origin.GetComponent<EnemyObject>();
+                    EnemyObject enemyObject = EnemyOrigin.GetComponent<EnemyObject>();
                     enemyObject.Health -= 1;
                 }
             }
@@ -146,7 +153,7 @@ namespace PunchGear.Entity
             {
                 transform.position = Vector2.SmoothDamp(
                     transform.position,
-                    Origin.transform.position,
+                    EnemyOrigin.transform.position,
                     ref velocityVector,
                     smoothTime // 감속 시간
                 );
@@ -157,15 +164,19 @@ namespace PunchGear.Entity
 
         private class MouseInputAction : IMouseInputAction
         {
-            private readonly IProjectile _projectile;
+            private readonly Projectile _projectile;
 
-            public MouseInputAction(IProjectile projectile)
+            public MouseInputAction(Projectile projectile)
             {
                 _projectile = projectile;
             }
 
             public void OnMouseDown(MouseInputs inputs)
             {
+                if (_projectile.Position != _projectile._playerMoveController.Position)
+                {
+                    return;
+                }
                 if (inputs == MouseInputs.Left)
                 {
                     _projectile.Disassemble();

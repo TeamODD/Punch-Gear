@@ -25,6 +25,7 @@ namespace PunchGear.Enemy
         public float smoothTime = 0.2f;
 
         private EntityPosition _position;
+        private Player _player;
 
         private readonly List<IAttackPattern> _attackPatterns = new List<IAttackPattern>();
 
@@ -35,6 +36,13 @@ namespace PunchGear.Enemy
             _attackPatterns.Add(new AttackPattern3(this, normal, fast));
             _attackPatterns.Add(new AttackPattern4(this, normal, fast));
             _attackPatterns.Add(new AttackPattern5(this, slow, normal, fast));
+
+            _player = FindFirstObjectByType<Player>();
+            if (_player == null)
+            {
+                throw new NullReferenceException("Cannot find any player component");
+            }
+            Debug.Log("Player detected");
         }
 
         private void Start()
@@ -61,25 +69,7 @@ namespace PunchGear.Enemy
                 EntityPosition.Top => EntityPosition.Bottom,
                 _ => throw new InvalidOperationException("Undefined value")
             };
-            Vector2 targetVector = EntityPositionHandler.Instance[targetPosition].Vector;
-            targetVector.x = transform.position.x;
-            float elapsedTime = 0f;
-            Vector2 velocityVector = Vector2.zero;
-            while (elapsedTime < duration)
-            {
-                // SmoothDamp를 통해 부드럽게 이동
-                transform.position = Vector2.SmoothDamp(
-                    transform.position,
-                    targetVector,
-                    ref velocityVector,
-                    smoothTime // 감속 시간
-                );
-                elapsedTime += Time.deltaTime; // 경과 시간 증가
-                yield return null; // 다음 프레임까지 대기
-            }
-
-            // 이동 완료 후 정확히 목표 위치로 설정
-            EntityPositionHandler.Instance.SetPosition(this, targetPosition);
+            yield return EntityPositionHandler.Instance.SmoothDampPosition(transform, targetPosition, duration, smoothTime);
             _position = targetPosition;
             _isMoving = false;
         }
@@ -89,7 +79,8 @@ namespace PunchGear.Enemy
             GameObject bulletObject = Instantiate(bullet, spawnPosition.transform.position, Quaternion.identity);
             Projectile projectile = bulletObject.GetComponent<Projectile>();
             projectile.Position = _position;
-            projectile.Origin = gameObject;
+            projectile.EnemyOrigin = gameObject;
+            projectile.Player = _player;
             yield return new WaitForSeconds(speed); // 시간 지연
         }
 
