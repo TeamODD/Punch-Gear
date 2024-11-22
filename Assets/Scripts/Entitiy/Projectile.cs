@@ -83,6 +83,16 @@ namespace PunchGear.Entity
                     enemyObject.Health -= 1;
                 }
             }
+            if (target.CompareTag("Player"))
+            {
+                if (_disassembled)
+                {
+                    return;
+                }
+                Player player = target.GetComponentInParent<Player>();
+                player.Health -= 1;
+                Destroy(gameObject);
+            }
         }
 
         private void OnTriggerExit2D(Collider2D collider)
@@ -91,7 +101,6 @@ namespace PunchGear.Entity
             if (target.CompareTag("GameController"))
             {
                 _canPlayerManipulate = false;
-                // StartCoroutine(StartBlinkAnimationCoroutine());
             }
         }
 
@@ -120,7 +129,6 @@ namespace PunchGear.Entity
             _rigidbody.AddForceY(10f, ForceMode2D.Impulse);
             _rigidbody.gravityScale = 2f;
             Debug.Log("Successfully disassembled");
-            // TODO: awaits player's assembly or explode
         }
 
         private IEnumerator StartBlinkAnimationCoroutine()
