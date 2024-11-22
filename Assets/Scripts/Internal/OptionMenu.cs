@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace PunchGear
+namespace PunchGear.Internal
 {
     public class OptionMenu : MonoBehaviour
     {

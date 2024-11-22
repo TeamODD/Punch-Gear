@@ -1,7 +1,7 @@
 ﻿using Unity.Properties;
 using UnityEngine;
 
-namespace PunchGear.Scenes
+namespace PunchGear.Internal
 {
     public class GameManager : MonoBehaviour
     {

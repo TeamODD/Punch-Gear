@@ -7,8 +7,9 @@ namespace PunchGear.Enemy
 {
     public class EnemyHealth : MonoBehaviour
     {
-        public Scenes.GameManager totalManager;
+        public Internal.GameManager totalManager;
         private float HealthBarLength; // 최대 채력 길이
+
         private float scaleControl; // 이건 지금부터 스케일 조정기여
         private float positionControl; // 너는 지금부터 위치 조정기여
         private Vector3 positionVelocity = Vector3.zero; // 위치에 대한 속도 추적 변수

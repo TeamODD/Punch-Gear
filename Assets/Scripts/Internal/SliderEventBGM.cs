@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace PunchGear
+namespace PunchGear.Internal
 {
     public class SliderVolume : MonoBehaviour
     {
