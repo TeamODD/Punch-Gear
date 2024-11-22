@@ -7,6 +7,9 @@ namespace PunchGear.Entity
     public class ProjectileSpriteProfile
     {
         [field: SerializeField]
+        public Sprite DefaultImage { get; private set; }
+
+        [field: SerializeField]
         public Sprite AssembleImage { get; private set; }
 
         [field: SerializeField]
