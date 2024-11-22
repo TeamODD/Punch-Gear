@@ -90,6 +90,8 @@ namespace PunchGear
 
         [field: SerializeField]
         public float Height { get; private set; }
+
+        public Vector2 Vector => new Vector2(0, Height);
     }
 
     public enum EntityPosition
