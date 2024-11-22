@@ -8,10 +8,13 @@ namespace PunchGear.Enemy
     {
         public GameObject bullet;
         public GameObject spawnPosition;
-        private Vector3 vel = Vector3.zero;
+
         public int height = 4; // 위아래 위치, 임시 세팅
-        private bool pos = true;
-        private bool isMoving = false;
+
+        private Vector3 _velocity = Vector3.zero;
+        private bool _pos = true;
+        private bool _isMoving = false;
+        private Coroutine _attackCoroutine;
 
         // 여기서 속도 수동 조작 가능
         public float slow = 1.2f;
@@ -20,7 +23,7 @@ namespace PunchGear.Enemy
         public float duration = 1f;
         public float term = 1.5f;
 
-        private List<IAttackPattern> _attackPatterns = new List<IAttackPattern>();
+        private readonly List<IAttackPattern> _attackPatterns = new List<IAttackPattern>();
 
         private void Awake()
         {
@@ -33,27 +36,32 @@ namespace PunchGear.Enemy
 
         private void Start()
         {
-            StartCoroutine(Pattern());
+            _attackCoroutine = StartCoroutine(Pattern());
+        }
+
+        private void OnDisable()
+        {
+            if (_attackCoroutine != null)
+            {
+                StopCoroutine(_attackCoroutine);
+            }
         }
 
         public IEnumerator TransPos() // 위치 반전 기계 에디션
         {
-            isMoving = true; // 이동 시작
-
-            Vector3 startPosition = this.transform.position; // 시작 위치
-            Vector3 targetPosition = startPosition + new Vector3(0, height * (pos ? 1 : -1), 0); // 목표 위치
-
+            _isMoving = true; // 이동 시작
+            Vector3 startPosition = transform.position; // 시작 위치
+            Vector3 targetPosition = startPosition + new Vector3(0, height * (_pos ? 1 : -1), 0); // 목표 위치
             float elapsedTime = 0f;
 
             while (elapsedTime < duration)
             {
                 float t = elapsedTime / duration;
-
                 // SmoothDamp를 통해 부드럽게 이동
-                this.transform.position = Vector3.SmoothDamp(
+                transform.position = Vector3.SmoothDamp(
                     gameObject.transform.position,
                     targetPosition,
-                    ref vel,
+                    ref _velocity,
                     0.2f // 감속 시간
                 );
 
@@ -62,16 +70,14 @@ namespace PunchGear.Enemy
             }
 
             // 이동 완료 후 정확히 목표 위치로 설정
-            this.transform.position = targetPosition;
-
-            pos = !pos; // 방향 반전
-            isMoving = false; // 이동 완료
+            transform.position = targetPosition;
+            _pos = !_pos; // 방향 반전
+            _isMoving = false; // 이동 완료
         }
 
         public IEnumerator Launch(float speed)
         {
             Instantiate(bullet, spawnPosition.transform.position, Quaternion.identity);
-            //대충 소환
             yield return new WaitForSeconds(speed); // 시간 지연
         }
 
