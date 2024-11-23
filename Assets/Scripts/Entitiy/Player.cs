@@ -3,11 +3,9 @@ using UnityEngine;
 
 namespace PunchGear.Entity
 {
-    public class Player : MonoBehaviour, IHealthHolder
+    [RequireComponent(typeof(PlayerMoveController))]
+    public class Player : MonoBehaviour, IHealthHolder, IPlaceableEntity
     {
-        [field: SerializeField]
-        public Weapon Weapon { get; private set; }
-
         [SerializeField]
         private int _healthPoint;
 
@@ -22,13 +20,12 @@ namespace PunchGear.Entity
             }
         }
 
+        [field: SerializeField]
+        public EntityPosition Position { get; set; }
 
         private void Awake()
         {
-            if (Weapon == null)
-            {
-                throw new NullReferenceException("Weapon is not attached.");
-            }
+            Position = EntityPosition.Bottom;
         }
 
         public event HealthChangeDelegate OnHealthChange;

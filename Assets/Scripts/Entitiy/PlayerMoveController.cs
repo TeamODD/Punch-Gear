@@ -5,60 +5,46 @@ using UnityEngine;
 
 namespace PunchGear.Entity
 {
-    public class PlayerMoveController : MonoBehaviour, IPlaceableEntity
+    public class PlayerMoveController : MonoBehaviour
     {
-        private static PlayerMoveController _instance;
-
         private GloballyPlayerInputHandler _globallyPlayerInputHandler;
-
-        [field: SerializeField]
-        public EntityPosition Position { get; internal set; }
-
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        private static void Initialize()
-        {
-            if (_instance)
-            {
-                return;
-            }
-            GameObject gameObject = new GameObject("Player Move Controller", typeof(PlayerMoveController));
-            _instance = gameObject.GetComponent<PlayerMoveController>();
-            Debug.Log("Player Move Controller initialized");
-        }
+        private Player _player;
 
         private void Awake()
         {
+            _player = GetComponent<Player>();
             _globallyPlayerInputHandler = GloballyPlayerInputHandler.Instance;
-            _globallyPlayerInputHandler.AddAction(new KeyboardInputAction(this));
+            _globallyPlayerInputHandler.AddAction(new KeyboardInputAction(this, _player));
             Debug.Log("Keyboard action attached");
         }
 
         private void Start()
         {
-            Position = EntityPosition.Bottom;
-            EntityPositionHandler.Instance.SetPosition(this, Position);
+            EntityPositionHandler.Instance.SetPosition(this, _player.Position);
         }
 
         private class KeyboardInputAction : IKeyboardInputAction
         {
             private readonly PlayerMoveController _controller;
+            private readonly Player _player;
 
             private Coroutine _smoothDampPositionCoroutine;
 
-            public KeyboardInputAction(PlayerMoveController controller)
+            public KeyboardInputAction(PlayerMoveController controller, Player player)
             {
                 _controller = controller;
+                _player = player;
             }
 
             public void OnKeyDown(IList<KeyCode> keyCodes)
             {
-                EntityPosition lastPosition = _controller.Position;
+                EntityPosition lastPosition = _player.Position;
                 if (keyCodes.Contains(KeyCode.W))
                 {
                     if (_smoothDampPositionCoroutine == null && lastPosition == EntityPosition.Bottom)
                     {
                         _smoothDampPositionCoroutine = _controller.StartCoroutine(StartAnimation(EntityPosition.Top));
-                        _controller.Position = EntityPosition.Top;
+                        _player.Position = EntityPosition.Top;
                     }
                 }
                 if (keyCodes.Contains(KeyCode.S))
@@ -66,7 +52,7 @@ namespace PunchGear.Entity
                     if (_smoothDampPositionCoroutine == null && lastPosition == EntityPosition.Top)
                     {
                         _smoothDampPositionCoroutine = _controller.StartCoroutine(StartAnimation(EntityPosition.Bottom));
-                        _controller.Position = EntityPosition.Bottom;
+                        _player.Position = EntityPosition.Bottom;
                     }
                 }
             }

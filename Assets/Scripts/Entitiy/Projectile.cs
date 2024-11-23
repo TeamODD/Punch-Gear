@@ -28,7 +28,6 @@ namespace PunchGear.Entity
         [field: SerializeField]
         public Player Player { get; set; }
 
-        private PlayerMoveController _playerMoveController;
 
         private void Awake()
         {
@@ -42,8 +41,7 @@ namespace PunchGear.Entity
             _canPlayerManipulate = false;
             _disassembled = false;
 
-            GloballyPlayerInputHandler globallyPlayerInputHandler = GloballyPlayerInputHandler.Instance;
-            globallyPlayerInputHandler.AddAction(_action);
+            GloballyPlayerInputHandler.Instance.AddAction(_action);
         }
 
         private void Start()
@@ -51,7 +49,6 @@ namespace PunchGear.Entity
             _renderer.sprite = _spriteProfile.DefaultImage;
             _canPlayerManipulate = false;
             _disassembled = false;
-            _playerMoveController = Player.GetComponent<PlayerMoveController>();
         }
 
         private void OnDisable()
@@ -76,13 +73,14 @@ namespace PunchGear.Entity
             }
             if (target.CompareTag("Nobility"))
             {
-                if (!_disassembled && _chaseEnemyAnimationCoroutine != null)
+                if (_disassembled || _chaseEnemyAnimationCoroutine == null)
                 {
-                    StopCoroutine(_chaseEnemyAnimationCoroutine);
-                    Destroy(gameObject);
-                    EnemyObject enemyObject = EnemyOrigin.GetComponent<EnemyObject>();
-                    enemyObject.Health -= 1;
+                    return;
                 }
+                StopCoroutine(_chaseEnemyAnimationCoroutine);
+                Destroy(gameObject);
+                EnemyObject enemyObject = EnemyOrigin.GetComponent<EnemyObject>();
+                enemyObject.Health -= 1;
             }
             if (target.CompareTag("Player"))
             {
@@ -168,7 +166,6 @@ namespace PunchGear.Entity
                     ref velocityVector,
                     smoothTime // 감속 시간
                 );
-                // 
                 yield return null;
             }
         }
@@ -184,7 +181,7 @@ namespace PunchGear.Entity
 
             public void OnMouseDown(MouseInputs inputs)
             {
-                if (_projectile.Position != _projectile._playerMoveController.Position)
+                if (_projectile.Position != _projectile.Player.Position)
                 {
                     return;
                 }
