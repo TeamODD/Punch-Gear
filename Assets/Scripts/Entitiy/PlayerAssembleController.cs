@@ -32,6 +32,7 @@ namespace PunchGear.Entity
             _style = new GUIStyle();
             _style.fontSize = (int)(40.0f * (Screen.width / 1920f));
 #endif
+            GloballyPlayerInputHandler.Instance.AddAction(new AnimationTransitionAction(this));
         }
 
         private void Start()
@@ -103,6 +104,38 @@ namespace PunchGear.Entity
             Disassemble
         }
 
+        private class AnimationTransitionAction : IMouseInputAction
+        {
+            private readonly PlayerAssembleController _assembleController;
+
+            public AnimationTransitionAction(PlayerAssembleController assembleController)
+            {
+                _assembleController = assembleController;
+            }
+
+            public void OnMouseDown(MouseInputs inputs)
+            {
+                if (inputs == MouseInputs.Left)
+                {
+                    if (_assembleController._isDisassembleFrozen)
+                    {
+                        return;
+                    }
+                    _assembleController._animator.SetTrigger("Disassemble");
+                    _assembleController.FreezeMouse(MouseAssembleAction.Disassemble);
+                }
+                else if (inputs == MouseInputs.Right)
+                {
+                    if (_assembleController._isAssembleFrozen)
+                    {
+                        return;
+                    }
+                    _assembleController._animator.SetTrigger("Assemble");
+                    _assembleController.FreezeMouse(MouseAssembleAction.Assemble);
+                }
+            }
+        }
+
         private class MouseInputAction : IMouseInputAction
         {
             private readonly Projectile _projectile;
@@ -125,14 +158,10 @@ namespace PunchGear.Entity
                 if (inputs == MouseInputs.Left && !_assembleController._isDisassembleFrozen)
                 {
                     _projectile.Disassemble();
-                    _assembleController._animator.SetTrigger("Disassemble");
-                    _assembleController.FreezeMouse(MouseAssembleAction.Disassemble);
                 }
                 else if (inputs == MouseInputs.Right && !_assembleController._isAssembleFrozen)
                 {
                     _projectile.Assemble();
-                    _assembleController._animator.SetTrigger("Assemble");
-                    _assembleController.FreezeMouse(MouseAssembleAction.Assemble);
                 }
             }
         }
