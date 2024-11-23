@@ -11,7 +11,8 @@ namespace PunchGear.Entity
         private ProjectileSpriteProfile _spriteProfile;
 
         private Rigidbody2D _rigidbody;
-        private SpriteRenderer _renderer;
+        private Animator _animator;
+        // private SpriteRenderer _renderer;
 
         private Coroutine _chaseEnemyAnimationCoroutine;
 
@@ -39,7 +40,8 @@ namespace PunchGear.Entity
                 throw new NullReferenceException("Sprite profile is not attached");
             }
             _rigidbody = GetComponent<Rigidbody2D>();
-            _renderer = GetComponent<SpriteRenderer>();
+            _animator = GetComponent<Animator>();
+            // _renderer = GetComponent<SpriteRenderer>();
             _canPlayerManipulate = false;
             _disassembled = false;
             _isAssembleFrozen = false;
@@ -47,7 +49,7 @@ namespace PunchGear.Entity
 
         private void Start()
         {
-            _renderer.sprite = _spriteProfile.DefaultImage;
+            // _renderer.sprite = _spriteProfile.DefaultImage;
             _canPlayerManipulate = false;
             _disassembled = false;
             _isAssembleFrozen = false;
@@ -110,7 +112,8 @@ namespace PunchGear.Entity
                 return;
             }
             _disassembled = false;
-            _renderer.sprite = _spriteProfile.AssembleImage;
+            _animator.SetTrigger("Assemble");
+            // _renderer.sprite = _spriteProfile.AssembleImage;
             Debug.Log("Successfully assembled");
             ChaseEnemy();
         }
@@ -122,7 +125,8 @@ namespace PunchGear.Entity
                 return;
             }
             _disassembled = true;
-            _renderer.sprite = _spriteProfile.DisassembleImage;
+            _animator.SetTrigger("Disassemble");
+            // _renderer.sprite = _spriteProfile.DisassembleImage;
             _rigidbody.linearVelocity = Vector2.zero;
             _rigidbody.bodyType = RigidbodyType2D.Dynamic;
             _rigidbody.AddForceY(10f, ForceMode2D.Impulse);
@@ -132,21 +136,21 @@ namespace PunchGear.Entity
             Debug.Log("Successfully disassembled");
         }
 
-        private IEnumerator StartBlinkAnimationCoroutine()
-        {
-            Material material = _renderer.material;
-            for (int i = 0; i < 10; i++)
-            {
-                Color color = material.color;
-                color.a = 0;
-                material.color = color;
-                yield return new WaitForSecondsRealtime(0.1f);
-                color = material.color;
-                color.a = 1f;
-                material.color = color;
-                yield return new WaitForSecondsRealtime(0.1f);
-            }
-        }
+        // private IEnumerator StartBlinkAnimationCoroutine()
+        // {
+        //     Material material = _renderer.material;
+        //     for (int i = 0; i < 10; i++)
+        //     {
+        //         Color color = material.color;
+        //         color.a = 0;
+        //         material.color = color;
+        //         yield return new WaitForSecondsRealtime(0.1f);
+        //         color = material.color;
+        //         color.a = 1f;
+        //         material.color = color;
+        //         yield return new WaitForSecondsRealtime(0.1f);
+        //     }
+        // }
 
         private void FreezeAssemble()
         {

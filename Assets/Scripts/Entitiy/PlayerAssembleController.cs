@@ -123,6 +123,7 @@ namespace PunchGear.Entity
                     }
                     _assembleController._animator.SetTrigger("Disassemble");
                     _assembleController.FreezeMouse(MouseAssembleAction.Disassemble);
+                    Debug.Log("Disassembly animation invoked");
                 }
                 else if (inputs == MouseInputs.Right)
                 {
@@ -132,6 +133,7 @@ namespace PunchGear.Entity
                     }
                     _assembleController._animator.SetTrigger("Assemble");
                     _assembleController.FreezeMouse(MouseAssembleAction.Assemble);
+                    Debug.Log("Assembly animation invoked");
                 }
             }
         }
