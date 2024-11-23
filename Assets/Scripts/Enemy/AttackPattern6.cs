@@ -4,11 +4,11 @@ using UnityEngine;
 
 namespace PunchGear.Enemy
 {
-    public class AttackPattern3 : IAttackPattern
+    public class AttackPattern6 : IAttackPattern
     {
         private readonly EnemyPattern _enemyPattern;
 
-        public AttackPattern3(EnemyPattern enemyPattern)
+        public AttackPattern6(EnemyPattern enemyPattern)
         {
             _enemyPattern = enemyPattern;
         }
@@ -16,17 +16,16 @@ namespace PunchGear.Enemy
         public IEnumerator GetPatternCoroutine()
         {
             ProjectileLauncher launcher = ProjectileLauncher.Instance;
-            yield return new WaitForSecondsRealtime(_enemyPattern.slow);
+            yield return new WaitForSecondsRealtime(_enemyPattern.normal);
+            yield return launcher.Launch(_enemyPattern.slow);
             yield return _enemyPattern.JoinCoroutines(
                 launcher.Launch(0),
                 _enemyPattern.MoveOppositePosition(),
                 new WaitForSecondsRealtime(_enemyPattern.normal));
-            yield return new WaitForSecondsRealtime(_enemyPattern.normal);
             yield return _enemyPattern.JoinCoroutines(
-                launcher.Launch(0),
                 _enemyPattern.MoveOppositePosition(),
                 new WaitForSecondsRealtime(_enemyPattern.normal));
-            yield return new WaitForSecondsRealtime(_enemyPattern.normal);
+            yield return new WaitForSecondsRealtime(_enemyPattern.fast);
             yield return launcher.Launch(_enemyPattern.fast);
         }
     }

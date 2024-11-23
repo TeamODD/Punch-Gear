@@ -34,11 +34,12 @@ namespace PunchGear.Enemy
 
         private void Awake()
         {
-            _attackPatterns.Add(new AttackPattern1(this, normal));
-            _attackPatterns.Add(new AttackPattern2(this, fast, slow));
-            _attackPatterns.Add(new AttackPattern3(this, normal, fast));
-            _attackPatterns.Add(new AttackPattern4(this, normal, fast));
-            _attackPatterns.Add(new AttackPattern5(this, slow, normal, fast));
+            _attackPatterns.Add(new AttackPattern1(this));
+            _attackPatterns.Add(new AttackPattern2(this));
+            _attackPatterns.Add(new AttackPattern3(this));
+            _attackPatterns.Add(new AttackPattern4(this));
+            _attackPatterns.Add(new AttackPattern5(this));
+            _attackPatterns.Add(new AttackPattern6(this));
 
             _player = FindFirstObjectByType<Player>();
             if (_player == null)
