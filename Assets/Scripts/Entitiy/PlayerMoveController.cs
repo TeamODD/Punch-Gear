@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace PunchGear.Entity
 {
-    public class PlayerMoveController : MonoBehaviour
+    public class PlayerMoveController : MonoBehaviour, IPlaceableEntity
     {
         private static PlayerMoveController _instance;
 
@@ -30,7 +30,6 @@ namespace PunchGear.Entity
         {
             _globallyPlayerInputHandler = GloballyPlayerInputHandler.Instance;
             _globallyPlayerInputHandler.AddAction(new KeyboardInputAction(this));
-            // _globallyPlayerInputHandler.AddAction(new MouseInputAction());
             Debug.Log("Keyboard action attached");
         }
 
@@ -80,21 +79,6 @@ namespace PunchGear.Entity
                     0.4f,
                     0.1f);
                 _smoothDampPositionCoroutine = null;
-            }
-        }
-
-        private class MouseInputAction : IMouseInputAction
-        {
-            public void OnMouseDown(MouseInputs inputs)
-            {
-                if (inputs.HasFlag(MouseInputs.Left))
-                {
-                    Debug.Log("Left button clicked");
-                }
-                if (inputs.HasFlag(MouseInputs.Right))
-                {
-                    Debug.Log("Right button clicked");
-                }
             }
         }
     }
