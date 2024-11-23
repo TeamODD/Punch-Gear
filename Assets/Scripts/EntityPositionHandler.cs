@@ -22,6 +22,7 @@ namespace PunchGear
             {
                 throw new NullReferenceException("Cannot find any Entity position handler");
             }
+
             DontDestroyOnLoad(_instance);
         }
 
