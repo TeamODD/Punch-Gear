@@ -7,7 +7,9 @@ namespace PunchGear.Entity
     public class PlayerAssembleController : MonoBehaviour
     {
         private Player _player;
-        private Dictionary<Projectile, IMouseInputAction> _mouseInputActionLookup = new Dictionary<Projectile, IMouseInputAction>();
+        private Dictionary<Projectile, IMouseInputAction> _mouseInputActionLookup;
+
+        private Animator _animator;
 
         [field: SerializeField]
         public float AssembleCooldown { get; private set; }
@@ -22,7 +24,8 @@ namespace PunchGear.Entity
         private void Awake()
         {
             _player = GetComponent<Player>();
-            // _mouseInputActionLookup = new Dictionary<Projectile, IMouseInputAction>();
+            _animator = GetComponent<Animator>();
+            _mouseInputActionLookup = new Dictionary<Projectile, IMouseInputAction>();
             _isAssembleFrozen = false;
             _isDisassembleFrozen = false;
 #if UNITY_EDITOR
@@ -91,6 +94,7 @@ namespace PunchGear.Entity
                 _isDisassembleFrozen = false;
                 Debug.Log("Disassemble is normal");
             }
+            _animator.SetTrigger("Idle");
         }
 
         private enum MouseAssembleAction
@@ -121,11 +125,13 @@ namespace PunchGear.Entity
                 if (inputs == MouseInputs.Left && !_assembleController._isDisassembleFrozen)
                 {
                     _projectile.Disassemble();
+                    _assembleController._animator.SetTrigger("Disassemble");
                     _assembleController.FreezeMouse(MouseAssembleAction.Disassemble);
                 }
                 else if (inputs == MouseInputs.Right && !_assembleController._isAssembleFrozen)
                 {
                     _projectile.Assemble();
+                    _assembleController._animator.SetTrigger("Assemble");
                     _assembleController.FreezeMouse(MouseAssembleAction.Assemble);
                 }
             }
