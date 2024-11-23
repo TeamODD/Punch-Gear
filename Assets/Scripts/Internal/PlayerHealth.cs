@@ -37,8 +37,6 @@ namespace PunchGear.Internal
             GameObject healthObject = _childObject[_gameManager.playerHealthMax - _gameManager.playerHealth];
             _gameManager.playerHealth--;
 
-            Debug.Log(_gameManager.playerHealth);
-
             for (int i = 0; i < 3; i++) 
             {
                 yield return new WaitForSeconds(duration);
