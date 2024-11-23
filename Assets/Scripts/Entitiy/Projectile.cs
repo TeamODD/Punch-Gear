@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Runtime.CompilerServices;
 using PunchGear.Enemy;
 using UnityEngine;
 
@@ -28,6 +29,14 @@ namespace PunchGear.Entity
         [field: SerializeField]
         public float AssembleFreezeCooldown { get; private set; }
 
+        [field: SerializeField]
+        public float SpinRate
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get;
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            private set;
+        }
 
         private void Awake()
         {
@@ -78,7 +87,7 @@ namespace PunchGear.Entity
             }
             if (target.CompareTag("Player"))
             {
-                if (_disassembled)
+                if (_disassembled || _finalized)
                 {
                     return;
                 }
@@ -155,10 +164,12 @@ namespace PunchGear.Entity
         {
             float smoothTime = 0.2f;
             Vector2 velocityVector = Vector2.zero;
-            while (_rigidbody.rotation < 360)
+            float entireAngle = 360;
+            float angleDelta = entireAngle * SpinRate;
+            while (_rigidbody.rotation < entireAngle)
             {
-                float angle = _rigidbody.rotation + 360 * Time.deltaTime * 2.718f;
-                _rigidbody.MoveRotation(angle);
+                float angle = _rigidbody.rotation + angleDelta * Time.deltaTime;
+                _rigidbody.SetRotation(angle);
                 yield return null;
             }
             _rigidbody.linearVelocity = Vector2.zero;
