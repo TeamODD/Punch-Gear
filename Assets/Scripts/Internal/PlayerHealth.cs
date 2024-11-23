@@ -7,14 +7,25 @@ namespace PunchGear.Internal
 {
     public class PlayerHealth : MonoBehaviour
     {
-        public GameManager gameManager;
-        public GameObject[] childObject = new GameObject[3];
+        [SerializeField]
+        private GameObject _gameManagerObject;
+
+        [SerializeField]
+        private GameObject[] _childObject = new GameObject[4];
+
+        [SerializeField]
+        private Sprite _broke;
+
+        private GameManager _gameManager;
+
         public float duration = 0.2f;
         private void Start()
         {
-            for (int i = 0; i < 3; i++)
+            _gameManager = _gameManagerObject.GetComponent<GameManager>();
+
+            for (int i = 0; i < 4; i++)
             {
-                childObject[i] = transform.GetChild(i).gameObject;
+                _childObject[i] = transform.GetChild(i).gameObject;
             }
 
             StartCoroutine(HealthControl());
@@ -23,8 +34,8 @@ namespace PunchGear.Internal
 
         private IEnumerator HealthControl()
         {
-            GameObject healthObject = childObject[gameManager.playerHealthMax - gameManager.playerHealth];
-            gameManager.playerHealth--;
+            GameObject healthObject = _childObject[_gameManager.playerHealthMax - _gameManager.playerHealth];
+            _gameManager.playerHealth--;
 
             for (int i = 0; i < 3; i++) 
             {
@@ -35,12 +46,18 @@ namespace PunchGear.Internal
             }
 
             Destroy(healthObject);
-
-            if (gameManager.playerHealth == 0)
-            {
-                // 대충 게임 오버
-
+            switch (_gameManager.playerHealth) {
+                case 0: break; // 대충 게임 오버
+                case 1: HealthBarBreak(); break;
             }
+
+        }
+
+        void HealthBarBreak()
+        {
+            SpriteRenderer spriteRenderer = _childObject[3].GetComponent<SpriteRenderer>();
+
+            spriteRenderer.sprite = _broke;
         }
     }
 }

@@ -21,7 +21,7 @@ namespace PunchGear.Enemy
             HealthBarLength = this.transform.localScale.x;
 
             scaleControl = (float)HealthBarLength / totalManager.enemyHealthMax;
-            positionControl = scaleControl * 0.5f;
+            positionControl = scaleControl * 6.5f;
 
             StartCoroutine(HealthHandler());
         }
