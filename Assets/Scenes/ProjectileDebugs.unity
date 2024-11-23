@@ -455,6 +455,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7169783917464954178, guid: 11f48ae4ade1f6547a8495a09da44e29, type: 3}
+      propertyPath: <AssembleCooldown>k__BackingField
+      value: 0.55
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -579,6 +583,7 @@ MonoBehaviour:
   duration: 1
   term: 1.5
   smoothTime: 0.2
+  <IsMoving>k__BackingField: 0
   <Position>k__BackingField: 0
 --- !u!114 &572161638
 MonoBehaviour:
