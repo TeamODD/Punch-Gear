@@ -8,7 +8,10 @@ namespace PunchGear.Internal
 
         private void OnMouseDown()
         {
-            gameManager.GetComponent<OpenOption>().OpenEvent();
+            if (!gameManager.GetComponent<OpenOption>().isPaused)
+            {
+                gameManager.GetComponent<OpenOption>().OpenEvent();
+            }
         }
     }
 }

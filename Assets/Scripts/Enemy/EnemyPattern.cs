@@ -13,7 +13,6 @@ namespace PunchGear.Enemy
 
         private Vector3 _velocity = Vector3.zero;
         private bool _pos = true;
-        private bool _isMoving = false;
         private Coroutine _attackCoroutine;
 
         // 여기서 속도 수동 조작 가능
@@ -49,7 +48,6 @@ namespace PunchGear.Enemy
 
         public IEnumerator TransPos() // 위치 반전 기계 에디션
         {
-            _isMoving = true; // 이동 시작
             Vector3 startPosition = transform.position; // 시작 위치
             Vector3 targetPosition = startPosition + new Vector3(0, height * (_pos ? 1 : -1), 0); // 목표 위치
             float elapsedTime = 0f;
@@ -72,7 +70,6 @@ namespace PunchGear.Enemy
             // 이동 완료 후 정확히 목표 위치로 설정
             transform.position = targetPosition;
             _pos = !_pos; // 방향 반전
-            _isMoving = false; // 이동 완료
         }
 
         public IEnumerator Launch(float speed)
