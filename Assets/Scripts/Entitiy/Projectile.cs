@@ -17,6 +17,7 @@ namespace PunchGear.Entity
 
         private bool _canPlayerManipulate;
         private bool _disassembled;
+        private bool _isAssembleFrozen;
 
         [field: SerializeField]
         public EntityPosition Position { get; set; }
@@ -26,6 +27,9 @@ namespace PunchGear.Entity
 
         [field: SerializeField]
         public Player Player { get; set; }
+
+        [field: SerializeField]
+        public float AssembleFreezeCooldown { get; private set; }
 
 
         private void Awake()
@@ -38,6 +42,7 @@ namespace PunchGear.Entity
             _renderer = GetComponent<SpriteRenderer>();
             _canPlayerManipulate = false;
             _disassembled = false;
+            _isAssembleFrozen = false;
         }
 
         private void Start()
@@ -45,6 +50,7 @@ namespace PunchGear.Entity
             _renderer.sprite = _spriteProfile.DefaultImage;
             _canPlayerManipulate = false;
             _disassembled = false;
+            _isAssembleFrozen = false;
         }
 
         private void OnDisable()
@@ -99,7 +105,7 @@ namespace PunchGear.Entity
 
         public void Assemble()
         {
-            if (!_canPlayerManipulate || !_disassembled)
+            if (!_canPlayerManipulate || !_disassembled || _isAssembleFrozen)
             {
                 return;
             }
@@ -121,6 +127,8 @@ namespace PunchGear.Entity
             _rigidbody.bodyType = RigidbodyType2D.Dynamic;
             _rigidbody.AddForceY(10f, ForceMode2D.Impulse);
             _rigidbody.gravityScale = 2f;
+            _isAssembleFrozen = true;
+            FreezeAssemble();
             Debug.Log("Successfully disassembled");
         }
 
@@ -138,6 +146,17 @@ namespace PunchGear.Entity
                 material.color = color;
                 yield return new WaitForSecondsRealtime(0.1f);
             }
+        }
+
+        private void FreezeAssemble()
+        {
+            StartCoroutine(FreezeAssembleCoroutine());
+        }
+
+        private IEnumerator FreezeAssembleCoroutine()
+        {
+            yield return new WaitForSecondsRealtime(AssembleFreezeCooldown);
+            _isAssembleFrozen = false;
         }
 
         private void ChaseEnemy()
