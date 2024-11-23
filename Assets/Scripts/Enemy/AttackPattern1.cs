@@ -21,12 +21,12 @@ namespace PunchGear.Enemy
                 launcher.Launch(0),
                 _enemyPattern.MoveOppositePosition(),
                 new WaitForSecondsRealtime(_enemyPattern.normal));
-            yield return new WaitForSecondsRealtime(_enemyPattern.normal);
+            yield return new WaitForSecondsRealtime(_enemyPattern.fast);
             yield return _enemyPattern.JoinCoroutines(
                 launcher.Launch(0),
                 _enemyPattern.MoveOppositePosition(),
                 new WaitForSecondsRealtime(_enemyPattern.normal));
-            yield return new WaitForSecondsRealtime(_enemyPattern.normal);
+            yield return new WaitForSecondsRealtime(_enemyPattern.fast);
             yield return _enemyPattern.StartCoroutine(launcher.Launch(_enemyPattern.fast));
         }
     }

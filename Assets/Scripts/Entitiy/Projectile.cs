@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using PunchGear.Enemy;
 using UnityEngine;
@@ -7,17 +6,15 @@ namespace PunchGear.Entity
 {
     public class Projectile : MonoBehaviour, IProjectile
     {
-        [SerializeField]
-        private ProjectileSpriteProfile _spriteProfile;
-
         private Rigidbody2D _rigidbody;
-        private SpriteRenderer _renderer;
+        private Animator _animator;
 
         private Coroutine _chaseEnemyAnimationCoroutine;
 
         private bool _canPlayerManipulate;
         private bool _disassembled;
         private bool _isAssembleFrozen;
+        private bool _finalized;
 
         [field: SerializeField]
         public EntityPosition Position { get; set; }
@@ -34,23 +31,20 @@ namespace PunchGear.Entity
 
         private void Awake()
         {
-            if (_spriteProfile == null)
-            {
-                throw new NullReferenceException("Sprite profile is not attached");
-            }
             _rigidbody = GetComponent<Rigidbody2D>();
-            _renderer = GetComponent<SpriteRenderer>();
+            _animator = GetComponent<Animator>();
             _canPlayerManipulate = false;
             _disassembled = false;
             _isAssembleFrozen = false;
+            _finalized = false;
         }
 
         private void Start()
         {
-            _renderer.sprite = _spriteProfile.DefaultImage;
             _canPlayerManipulate = false;
             _disassembled = false;
             _isAssembleFrozen = false;
+            _finalized = false;
         }
 
         private void OnDisable()
@@ -110,19 +104,25 @@ namespace PunchGear.Entity
                 return;
             }
             _disassembled = false;
-            _renderer.sprite = _spriteProfile.AssembleImage;
+            _finalized = true;
+            _animator.SetTrigger("Assemble");
+            _rigidbody.linearVelocity = Vector2.zero;
+            _rigidbody.bodyType = RigidbodyType2D.Dynamic;
+            _rigidbody.gravityScale = 0;
+            // _renderer.sprite = _spriteProfile.AssembleImage;
             Debug.Log("Successfully assembled");
             ChaseEnemy();
         }
 
         public void Disassemble()
         {
-            if (!_canPlayerManipulate || _disassembled)
+            if (!_canPlayerManipulate || _disassembled || _finalized)
             {
                 return;
             }
             _disassembled = true;
-            _renderer.sprite = _spriteProfile.DisassembleImage;
+            _animator.SetTrigger("Disassemble");
+            // _renderer.sprite = _spriteProfile.DisassembleImage;
             _rigidbody.linearVelocity = Vector2.zero;
             _rigidbody.bodyType = RigidbodyType2D.Dynamic;
             _rigidbody.AddForceY(10f, ForceMode2D.Impulse);
@@ -130,22 +130,6 @@ namespace PunchGear.Entity
             _isAssembleFrozen = true;
             FreezeAssemble();
             Debug.Log("Successfully disassembled");
-        }
-
-        private IEnumerator StartBlinkAnimationCoroutine()
-        {
-            Material material = _renderer.material;
-            for (int i = 0; i < 10; i++)
-            {
-                Color color = material.color;
-                color.a = 0;
-                material.color = color;
-                yield return new WaitForSecondsRealtime(0.1f);
-                color = material.color;
-                color.a = 1f;
-                material.color = color;
-                yield return new WaitForSecondsRealtime(0.1f);
-            }
         }
 
         private void FreezeAssemble()
@@ -171,6 +155,15 @@ namespace PunchGear.Entity
         {
             float smoothTime = 0.2f;
             Vector2 velocityVector = Vector2.zero;
+            while (_rigidbody.rotation < 360)
+            {
+                float angle = _rigidbody.rotation + 360 * Time.deltaTime * 2.718f;
+                _rigidbody.MoveRotation(angle);
+                yield return null;
+            }
+            _rigidbody.linearVelocity = Vector2.zero;
+            _rigidbody.SetRotation(0);
+            yield return null;
             while (true)
             {
                 transform.position = Vector2.SmoothDamp(

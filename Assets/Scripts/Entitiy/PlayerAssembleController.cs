@@ -43,7 +43,6 @@ namespace PunchGear.Entity
                 IMouseInputAction action = new MouseInputAction(projectile, _player, this);
                 _mouseInputActionLookup[projectile] = action;
                 GloballyPlayerInputHandler.Instance.AddAction(action);
-                Debug.LogFormat("Action registered for Bullet {1}: {0}", _mouseInputActionLookup.ContainsKey(projectile), projectile.gameObject.name);
             });
             launcher.OnProjectileDestroyed.AddListener(projectile =>
             {
@@ -77,23 +76,19 @@ namespace PunchGear.Entity
             if (assembleAction == MouseAssembleAction.Assemble)
             {
                 _isAssembleFrozen = true;
-                Debug.Log("Assemble is frozen");
             }
             else
             {
                 _isDisassembleFrozen = true;
-                Debug.Log("Disassemble is frozen");
             }
             yield return new WaitForSecondsRealtime(AssembleCooldown);
             if (assembleAction == MouseAssembleAction.Assemble)
             {
                 _isAssembleFrozen = false;
-                Debug.Log("Assemble is normal");
             }
             else
             {
                 _isDisassembleFrozen = false;
-                Debug.Log("Disassemble is normal");
             }
             _animator.SetTrigger("Idle");
         }
