@@ -1,27 +1,24 @@
 using System.Collections;
 using PunchGear.Entity;
+using UnityEngine;
 
 namespace PunchGear.Enemy
 {
     public class AttackPattern4 : IAttackPattern
     {
         private readonly EnemyPattern _enemyPattern;
-        private readonly float _projectileSlowSpeed;
-        private readonly float _projectileFastSpeed;
 
-        public AttackPattern4(EnemyPattern enemyPattern, float projectileSlowSpeed, float projectileFastSpeed)
+        public AttackPattern4(EnemyPattern enemyPattern)
         {
             _enemyPattern = enemyPattern;
-            _projectileSlowSpeed = projectileSlowSpeed;
-            _projectileFastSpeed = projectileFastSpeed;
         }
 
         public IEnumerator GetPatternCoroutine()
         {
             ProjectileLauncher launcher = ProjectileLauncher.Instance;
-            yield return _enemyPattern.StartCoroutine(_enemyPattern.MoveOppositePosition());
-            yield return _enemyPattern.StartCoroutine(launcher.Launch(_projectileFastSpeed));
-            yield return _enemyPattern.StartCoroutine(launcher.Launch(_projectileSlowSpeed));
+            yield return _enemyPattern.JoinCoroutines(_enemyPattern.MoveOppositePosition(), new WaitForSecondsRealtime(_enemyPattern.fast));
+            yield return _enemyPattern.JoinCoroutines(launcher.Launch(0), new WaitForSecondsRealtime(_enemyPattern.slow));
+            yield return launcher.Launch(_enemyPattern.fast);
         }
     }
 }

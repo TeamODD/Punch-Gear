@@ -1,27 +1,33 @@
 using System.Collections;
 using PunchGear.Entity;
+using UnityEngine;
 
 namespace PunchGear.Enemy
 {
     public class AttackPattern1 : IAttackPattern
     {
         private readonly EnemyPattern _enemyPattern;
-        private readonly float _projectileSpeed;
 
-        public AttackPattern1(EnemyPattern enemyPattern, float projectileSpeed)
+        public AttackPattern1(EnemyPattern enemyPattern)
         {
             _enemyPattern = enemyPattern;
-            _projectileSpeed = projectileSpeed;
         }
 
         public IEnumerator GetPatternCoroutine()
         {
             ProjectileLauncher launcher = ProjectileLauncher.Instance;
-            yield return _enemyPattern.StartCoroutine(launcher.Launch(_projectileSpeed));
-            yield return _enemyPattern.StartCoroutine(_enemyPattern.MoveOppositePosition());
-            yield return _enemyPattern.StartCoroutine(launcher.Launch(_projectileSpeed));
-            yield return _enemyPattern.StartCoroutine(_enemyPattern.MoveOppositePosition());
-            yield return _enemyPattern.StartCoroutine(launcher.Launch(_projectileSpeed));
+            yield return new WaitForSecondsRealtime(_enemyPattern.normal);
+            yield return _enemyPattern.JoinCoroutines(
+                launcher.Launch(0),
+                _enemyPattern.MoveOppositePosition(),
+                new WaitForSecondsRealtime(_enemyPattern.normal));
+            yield return new WaitForSecondsRealtime(_enemyPattern.normal);
+            yield return _enemyPattern.JoinCoroutines(
+                launcher.Launch(0),
+                _enemyPattern.MoveOppositePosition(),
+                new WaitForSecondsRealtime(_enemyPattern.normal));
+            yield return new WaitForSecondsRealtime(_enemyPattern.normal);
+            yield return _enemyPattern.StartCoroutine(launcher.Launch(_enemyPattern.fast));
         }
     }
 }
