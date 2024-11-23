@@ -1,56 +1,52 @@
+using PunchGear.Entity;
+using System;
+using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 
 namespace PunchGear
 {
     public class AudioManager : MonoBehaviour
     {
-        private static AudioManager instance; //넌 뭐니
-        public AudioSource audioSource;
-        public AudioClip clip;
-        public static AudioManager Instance
-        {
-            get
-            {
-                if (instance == null)
-                {
-                    Debug.LogError("AudioManager instance is null. Make sure it is in the scene.");
-                }
-                return instance;
-            }
-        }
+        private static AudioManager _instance;
+        private AudioSource _audioSource;
+
+        [SerializeField]
+        private AudioClip clip;
+
         private void Awake()
         {
-            // Singleton pattern
-            if (instance == null)
+            var obj = UnityEngine.Object.FindObjectsByType<AudioManager>(FindObjectsSortMode.None);
+            if (obj.Length == 1)
             {
-                instance = this;
-                DontDestroyOnLoad(gameObject); // 이 오브젝트를 씬 전환 시 파괴되지 않도록 설정
+                DontDestroyOnLoad(gameObject);
             }
             else
             {
-                Destroy(gameObject); // 이미 존재하는 인스턴스가 있을 경우 현재 오브젝트를 파괴
+                Destroy(gameObject);
             }
         }
+
         private void Start()
         {
-            audioSource = GetComponent<AudioSource>();
+            _audioSource = GetComponent<AudioSource>();
 
-            audioSource.clip = this.clip;
-            audioSource.loop = true; // 반복 재생 설정
-            audioSource.volume = 0.5f;
-            audioSource.Play(); // 지속적으로 재생
-
-            AudioPause(false);
-            Time.timeScale = 1f;
+            _audioSource.clip = this.clip;
+            _audioSource.loop = true;
+            _audioSource.volume = 0.5f;
+            _audioSource.Play();
         }
 
-        public void AudioPause(bool isPaused)
-        {
-            audioSource.pitch = isPaused ? 0f : 1f;
-        }
         public void SetVolume(float volume)
         {
-            audioSource.volume = volume; // 0.0에서 1.0 사이의 값
+            if (volume >= 0f && volume <= 1f)
+            {
+                _audioSource.volume = volume; // 0.0에서 1.0 사이의 값
+            }
+            else
+            {
+                throw new ArgumentException(nameof(volume), "Volume must be between 0 and 1");
+            }
         }
     }
 }
