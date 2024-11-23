@@ -69,10 +69,12 @@ namespace PunchGear.Entity
                 throw new NullReferenceException("Bullet launcher origin is not set");
             }
             GameObject bulletObject = Instantiate(BulletPrefab, BulletLauncherOrigin.transform.position, Quaternion.identity);
+            bulletObject.name = "Bullet";
             Projectile projectile = bulletObject.GetComponent<Projectile>();
             projectile.Position = _placeableEntity.Position;
             projectile.EnemyOrigin = BulletLauncherOrigin;
             projectile.Player = _player;
+            yield return null;
             OnProjectileCreated.Invoke(projectile);
             yield return new WaitForSeconds(launcherCooldown); // 시간 지연
         }
