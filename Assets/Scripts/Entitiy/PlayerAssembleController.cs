@@ -7,7 +7,7 @@ namespace PunchGear.Entity
     public class PlayerAssembleController : MonoBehaviour
     {
         private Player _player;
-        private Dictionary<Projectile, IMouseInputAction> _mouseInputActionLookup;
+        private Dictionary<Projectile, IMouseInputAction> _mouseInputActionLookup = new Dictionary<Projectile, IMouseInputAction>();
 
         [field: SerializeField]
         public float AssembleCooldown { get; private set; }
@@ -15,12 +15,20 @@ namespace PunchGear.Entity
         private bool _isAssembleFrozen;
         private bool _isDisassembleFrozen;
 
+#if UNITY_EDITOR
+        private GUIStyle _style;
+#endif
+
         private void Awake()
         {
             _player = GetComponent<Player>();
-            _mouseInputActionLookup = new Dictionary<Projectile, IMouseInputAction>();
+            // _mouseInputActionLookup = new Dictionary<Projectile, IMouseInputAction>();
             _isAssembleFrozen = false;
             _isDisassembleFrozen = false;
+#if UNITY_EDITOR
+            _style = new GUIStyle();
+            _style.fontSize = (int)(40.0f * (Screen.width / 1920f));
+#endif
         }
 
         private void Start()
@@ -31,6 +39,7 @@ namespace PunchGear.Entity
                 IMouseInputAction action = new MouseInputAction(projectile, _player, this);
                 _mouseInputActionLookup[projectile] = action;
                 GloballyPlayerInputHandler.Instance.AddAction(action);
+                Debug.LogFormat("Action registered for Bullet {1}: {0}", _mouseInputActionLookup.ContainsKey(projectile), projectile.gameObject.name);
             });
             launcher.OnProjectileDestroyed.AddListener(projectile =>
             {
@@ -39,6 +48,14 @@ namespace PunchGear.Entity
                 _mouseInputActionLookup.Remove(projectile);
             });
         }
+
+#if UNITY_EDITOR
+        private void OnGUI()
+        {
+            GUI.Label(new Rect(50, 50, 200, 100), $"isAssembleFrozen: {_isAssembleFrozen}", _style);
+            GUI.Label(new Rect(50, 150, 200, 100), $"isDisassembleFrozen: {_isDisassembleFrozen}", _style);
+        }
+#endif
 
         private void OnDisable()
         {
