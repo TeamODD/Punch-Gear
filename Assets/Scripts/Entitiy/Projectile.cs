@@ -12,7 +12,6 @@ namespace PunchGear.Entity
 
         private Rigidbody2D _rigidbody;
         private SpriteRenderer _renderer;
-        private IMouseInputAction _action;
 
         private Coroutine _chaseEnemyAnimationCoroutine;
 
@@ -37,11 +36,8 @@ namespace PunchGear.Entity
             }
             _rigidbody = GetComponent<Rigidbody2D>();
             _renderer = GetComponent<SpriteRenderer>();
-            _action = new MouseInputAction(this);
             _canPlayerManipulate = false;
             _disassembled = false;
-
-            GloballyPlayerInputHandler.Instance.AddAction(_action);
         }
 
         private void Start()
@@ -54,8 +50,6 @@ namespace PunchGear.Entity
         private void OnDisable()
         {
             ProjectileLauncher.Instance.OnProjectileDestroyed.Invoke(this);
-            GloballyPlayerInputHandler globallyPlayerInputHandler = GloballyPlayerInputHandler.Instance;
-            globallyPlayerInputHandler.RemoveAction(_action);
         }
 
         private void OnTriggerEnter2D(Collider2D collider)
