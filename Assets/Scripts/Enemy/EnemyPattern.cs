@@ -6,14 +6,14 @@ using PunchGear.Entity;
 
 namespace PunchGear.Enemy
 {
-    public class EnemyPattern : MonoBehaviour
+    public class EnemyPattern : MonoBehaviour, IPlaceableEntity
     {
         public GameObject bullet;
         public GameObject spawnPosition;
 
         public int height = 4; // 위아래 위치, 임시 세팅
 
-        private bool _isMoving = false;
+        private Player _player;
         private Coroutine _attackCoroutine;
 
         // 여기서 속도 수동 조작 가능
@@ -24,8 +24,11 @@ namespace PunchGear.Enemy
         public float term = 1.5f;
         public float smoothTime = 0.2f;
 
-        private EntityPosition _position;
-        private Player _player;
+        [field: SerializeField]
+        public bool IsMoving { get; private set; }
+
+        [field: SerializeField]
+        public EntityPosition Position { get; private set; }
 
         private readonly List<IAttackPattern> _attackPatterns = new List<IAttackPattern>();
 
@@ -47,8 +50,9 @@ namespace PunchGear.Enemy
 
         private void Start()
         {
-            _position = EntityPosition.Bottom;
+            Position = EntityPosition.Bottom;
             EntityPositionHandler.Instance.SetPosition(this, EntityPosition.Bottom);
+            ProjectileLauncher.Instance.BulletLauncherOrigin = gameObject;
             _attackCoroutine = StartCoroutine(Pattern());
         }
 
@@ -62,23 +66,24 @@ namespace PunchGear.Enemy
 
         public IEnumerator MoveOppositePosition() // 위치 반전 기계 에디션
         {
-            _isMoving = true; // 이동 시작
-            EntityPosition targetPosition = _position switch
+            IsMoving = true; // 이동 시작
+            EntityPosition targetPosition = Position switch
             {
                 EntityPosition.Bottom => EntityPosition.Top,
                 EntityPosition.Top => EntityPosition.Bottom,
                 _ => throw new InvalidOperationException("Undefined value")
             };
             yield return EntityPositionHandler.Instance.SmoothDampPosition(transform, targetPosition, duration, smoothTime);
-            _position = targetPosition;
-            _isMoving = false;
+            Position = targetPosition;
+            IsMoving = false;
         }
 
+        [Obsolete]
         public IEnumerator Launch(float speed)
         {
             GameObject bulletObject = Instantiate(bullet, spawnPosition.transform.position, Quaternion.identity);
             Projectile projectile = bulletObject.GetComponent<Projectile>();
-            projectile.Position = _position;
+            projectile.Position = Position;
             projectile.EnemyOrigin = gameObject;
             projectile.Player = _player;
             yield return new WaitForSeconds(speed); // 시간 지연

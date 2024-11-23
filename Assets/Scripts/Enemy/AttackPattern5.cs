@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using PunchGear.Entity;
 
 namespace PunchGear.Enemy
 {
@@ -24,6 +25,7 @@ namespace PunchGear.Enemy
 
         public IEnumerator GetPatternCoroutine()
         {
+            ProjectileLauncher launcher = ProjectileLauncher.Instance;
             for (int i = 0; i < 5; i++)
             {
                 int randomInt = Random.Range(0, 4);
@@ -31,9 +33,9 @@ namespace PunchGear.Enemy
                 switch (randomInt)
                 {
                     case 0: yield return _enemyPattern.MoveOppositePosition(); break;
-                    case 1: yield return _enemyPattern.Launch(_projectileSlowSpeed); break;
-                    case 2: yield return _enemyPattern.Launch(_projectileNormalSpeed); break;
-                    case 3: yield return _enemyPattern.Launch(_projectileFastSpeed); break;
+                    case 1: yield return launcher.Launch(_projectileSlowSpeed); break;
+                    case 2: yield return launcher.Launch(_projectileNormalSpeed); break;
+                    case 3: yield return launcher.Launch(_projectileFastSpeed); break;
                 }
             }
         }

@@ -12,7 +12,6 @@ namespace PunchGear.Entity
 
         private Rigidbody2D _rigidbody;
         private SpriteRenderer _renderer;
-        private IMouseInputAction _action;
 
         private Coroutine _chaseEnemyAnimationCoroutine;
 
@@ -28,7 +27,6 @@ namespace PunchGear.Entity
         [field: SerializeField]
         public Player Player { get; set; }
 
-        private PlayerMoveController _playerMoveController;
 
         private void Awake()
         {
@@ -38,12 +36,8 @@ namespace PunchGear.Entity
             }
             _rigidbody = GetComponent<Rigidbody2D>();
             _renderer = GetComponent<SpriteRenderer>();
-            _action = new MouseInputAction(this);
             _canPlayerManipulate = false;
             _disassembled = false;
-
-            GloballyPlayerInputHandler globallyPlayerInputHandler = GloballyPlayerInputHandler.Instance;
-            globallyPlayerInputHandler.AddAction(_action);
         }
 
         private void Start()
@@ -51,13 +45,11 @@ namespace PunchGear.Entity
             _renderer.sprite = _spriteProfile.DefaultImage;
             _canPlayerManipulate = false;
             _disassembled = false;
-            _playerMoveController = Player.GetComponent<PlayerMoveController>();
         }
 
         private void OnDisable()
         {
-            GloballyPlayerInputHandler globallyPlayerInputHandler = GloballyPlayerInputHandler.Instance;
-            globallyPlayerInputHandler.RemoveAction(_action);
+            ProjectileLauncher.Instance.OnProjectileDestroyed.Invoke(this);
         }
 
         private void OnTriggerEnter2D(Collider2D collider)
@@ -75,13 +67,14 @@ namespace PunchGear.Entity
             }
             if (target.CompareTag("Nobility"))
             {
-                if (!_disassembled && _chaseEnemyAnimationCoroutine != null)
+                if (_disassembled || _chaseEnemyAnimationCoroutine == null)
                 {
-                    StopCoroutine(_chaseEnemyAnimationCoroutine);
-                    Destroy(gameObject);
-                    EnemyObject enemyObject = EnemyOrigin.GetComponent<EnemyObject>();
-                    enemyObject.Health -= 1;
+                    return;
                 }
+                StopCoroutine(_chaseEnemyAnimationCoroutine);
+                Destroy(gameObject);
+                EnemyObject enemyObject = EnemyOrigin.GetComponent<EnemyObject>();
+                enemyObject.Health -= 1;
             }
             if (target.CompareTag("Player"))
             {
@@ -167,7 +160,6 @@ namespace PunchGear.Entity
                     ref velocityVector,
                     smoothTime // 감속 시간
                 );
-                // 
                 yield return null;
             }
         }
@@ -183,7 +175,7 @@ namespace PunchGear.Entity
 
             public void OnMouseDown(MouseInputs inputs)
             {
-                if (_projectile.Position != _projectile._playerMoveController.Position)
+                if (_projectile.Position != _projectile.Player.Position)
                 {
                     return;
                 }

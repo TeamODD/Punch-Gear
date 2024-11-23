@@ -1,4 +1,5 @@
 using System.Collections;
+using PunchGear.Entity;
 
 namespace PunchGear.Enemy
 {
@@ -17,13 +18,14 @@ namespace PunchGear.Enemy
 
         public IEnumerator GetPatternCoroutine()
         {
-            yield return _enemyPattern.StartCoroutine(_enemyPattern.Launch(_projectileFastSpeed));
-            yield return _enemyPattern.StartCoroutine(_enemyPattern.Launch(_projectileFastSpeed));
-            yield return _enemyPattern.StartCoroutine(_enemyPattern.Launch(_projectileFastSpeed));
-            yield return _enemyPattern.StartCoroutine(_enemyPattern.Launch(_projectileFastSpeed));
+            ProjectileLauncher launcher = ProjectileLauncher.Instance;
+            yield return _enemyPattern.StartCoroutine(launcher.Launch(_projectileFastSpeed));
+            yield return _enemyPattern.StartCoroutine(launcher.Launch(_projectileFastSpeed));
+            yield return _enemyPattern.StartCoroutine(launcher.Launch(_projectileFastSpeed));
+            yield return _enemyPattern.StartCoroutine(launcher.Launch(_projectileFastSpeed));
             yield return _enemyPattern.StartCoroutine(_enemyPattern.MoveOppositePosition());
-            yield return _enemyPattern.StartCoroutine(_enemyPattern.Launch(_projectileSlowSpeed));
-            yield return _enemyPattern.StartCoroutine(_enemyPattern.Launch(_projectileSlowSpeed));
+            yield return _enemyPattern.StartCoroutine(launcher.Launch(_projectileSlowSpeed));
+            yield return _enemyPattern.StartCoroutine(launcher.Launch(_projectileSlowSpeed));
         }
     }
 }
