@@ -257,8 +257,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0.49685526, g: 0.4952928, b: 0.4952928, a: 1}
+  m_Sprite: {fileID: -3863398898160514251, guid: b7a812a9fbfd7324083201e829834d82, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -277,9 +277,9 @@ Transform:
   m_GameObject: {fileID: 224769693}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 7.84, y: 3.98, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: 7.8, y: 3.63, z: 0}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1433435890}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -334,7 +334,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 2.28, y: 2.13}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -528,7 +528,7 @@ GameObject:
   - component: {fileID: 522800103}
   - component: {fileID: 522800102}
   m_Layer: 0
-  m_Name: "\uC11C\uBE0C \uC694\uB124 DLC"
+  m_Name: "\uC774\uAE30\uC5B4\uAC80  DLC"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -561,7 +561,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4330cbd3428483b46b9d3a497ffd8305, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  totalManager: {fileID: 1783490089}
+  gameManagerObject: {fileID: 1783490088}
   duration: 0.6
 --- !u!212 &522800103
 SpriteRenderer:
@@ -1012,7 +1012,7 @@ Transform:
   m_GameObject: {fileID: 683125599}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.95, y: 3.43, z: 0}
+  m_LocalPosition: {x: 0.95, y: 3.56, z: 0}
   m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2638,7 +2638,7 @@ GameObject:
   - component: {fileID: 1480367901}
   - component: {fileID: 1480367902}
   m_Layer: 0
-  m_Name: "\uC694\uB124 DLC"
+  m_Name: "\uC30D\uAC80 DLC"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3203,7 +3203,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4330cbd3428483b46b9d3a497ffd8305, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  totalManager: {fileID: 1783490089}
+  gameManagerObject: {fileID: 1783490088}
   duration: 0.6
 --- !u!1 &1682269245
 GameObject:
@@ -3795,7 +3795,7 @@ Transform:
   m_GameObject: {fileID: 1849237974}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 3.5, z: 0}
+  m_LocalPosition: {x: 0, y: 3.63, z: 0}
   m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
   m_ConstrainProportionsScale: 1
   m_Children: []
