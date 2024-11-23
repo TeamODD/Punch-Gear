@@ -67,7 +67,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -81,7 +81,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 2, y: 2}
   m_EdgeRadius: 0
 --- !u!50 &2757875681172613768
 Rigidbody2D:
@@ -136,10 +136,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ccab060a79cd6342a5ad964ec88779e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _spriteProfile:
-    <DefaultImage>k__BackingField: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-    <AssembleImage>k__BackingField: {fileID: -712631045867808456, guid: b670ab75dde984907b8570040daa08c5, type: 3}
-    <DisassembleImage>k__BackingField: {fileID: 7482667652216324306, guid: 75f5f34dc1b5347e0b8351032682f224, type: 3}
   <Position>k__BackingField: 0
   <EnemyOrigin>k__BackingField: {fileID: 0}
   <Player>k__BackingField: {fileID: 0}
