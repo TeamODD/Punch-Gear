@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Runtime.CompilerServices;
 using PunchGear.Enemy;
@@ -8,6 +9,8 @@ namespace PunchGear.Entity
     public class Projectile : MonoBehaviour, IProjectile
     {
         private Rigidbody2D _rigidbody;
+        [SerializeField]
+        private Rigidbody2D _spriteRigidbody;
         private Animator _animator;
 
         private Coroutine _chaseEnemyAnimationCoroutine;
@@ -40,6 +43,10 @@ namespace PunchGear.Entity
 
         private void Awake()
         {
+            if (_spriteRigidbody == null)
+            {
+                throw new NullReferenceException("Rigidbody of sprite is not attached");
+            }
             _rigidbody = GetComponent<Rigidbody2D>();
             _animator = GetComponent<Animator>();
             _canPlayerManipulate = false;
@@ -164,17 +171,18 @@ namespace PunchGear.Entity
         {
             float smoothTime = 0.2f;
             Vector2 velocityVector = Vector2.zero;
-            float entireAngle = 360;
-            float angleDelta = entireAngle * SpinRate;
-            while (_rigidbody.rotation < entireAngle)
-            {
-                float angle = _rigidbody.rotation + angleDelta * Time.deltaTime;
-                _rigidbody.SetRotation(angle);
-                yield return null;
-            }
-            _rigidbody.linearVelocity = Vector2.zero;
-            _rigidbody.SetRotation(0);
-            yield return null;
+            // float entireAngle = 360;
+            // float angleDelta = entireAngle * SpinRate;
+            // while (_spriteRigidbody.rotation < entireAngle)
+            // {
+            //     float angle = _spriteRigidbody.rotation + angleDelta * Time.deltaTime;
+            //     _spriteRigidbody.SetRotation(angle);
+            //     yield return null;
+            // }
+            // _spriteRigidbody.linearVelocity = Vector2.zero;
+            // _spriteRigidbody.SetRotation(0);
+            // yield return null;
+            yield return new WaitForSecondsRealtime(0.2f);
             while (true)
             {
                 transform.position = Vector2.SmoothDamp(
