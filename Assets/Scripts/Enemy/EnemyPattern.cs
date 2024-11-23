@@ -13,7 +13,7 @@ namespace PunchGear.Enemy
 
         public int height = 4; // 위아래 위치, 임시 세팅
 
-        private bool _isMoving = false;
+        private Player _player;
         private Coroutine _attackCoroutine;
 
         // 여기서 속도 수동 조작 가능
@@ -25,8 +25,10 @@ namespace PunchGear.Enemy
         public float smoothTime = 0.2f;
 
         [field: SerializeField]
+        public bool IsMoving { get; private set; }
+
+        [field: SerializeField]
         public EntityPosition Position { get; private set; }
-        private Player _player;
 
         private readonly List<IAttackPattern> _attackPatterns = new List<IAttackPattern>();
 
@@ -64,7 +66,7 @@ namespace PunchGear.Enemy
 
         public IEnumerator MoveOppositePosition() // 위치 반전 기계 에디션
         {
-            _isMoving = true; // 이동 시작
+            IsMoving = true; // 이동 시작
             EntityPosition targetPosition = Position switch
             {
                 EntityPosition.Bottom => EntityPosition.Top,
@@ -73,7 +75,7 @@ namespace PunchGear.Enemy
             };
             yield return EntityPositionHandler.Instance.SmoothDampPosition(transform, targetPosition, duration, smoothTime);
             Position = targetPosition;
-            _isMoving = false;
+            IsMoving = false;
         }
 
         [Obsolete]
