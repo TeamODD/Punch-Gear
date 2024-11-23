@@ -5,7 +5,7 @@ namespace PunchGear.Scenes
 {
     public class MainHandler : MonoBehaviour
     {
-        private string internalScene = "";
+        private string internalScene = "Internal";
 
         void Update()
         {

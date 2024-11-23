@@ -5,7 +5,7 @@ namespace PunchGear.Scenes
 {
     public class ResultHandler : MonoBehaviour
     {
-        public string internalScene;
+        public string internalScene = "Internal";
 
         public void EndEvent() //뭔진 모르지만 꿀잼 1호기 코드 긁어옴
         {
