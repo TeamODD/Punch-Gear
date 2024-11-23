@@ -1,9 +1,9 @@
-using System;
 using UnityEngine;
 
 namespace PunchGear.Entity
 {
     [RequireComponent(typeof(PlayerMoveController))]
+    [RequireComponent(typeof(PlayerAssembleController))]
     public class Player : MonoBehaviour, IHealthHolder, IPlaceableEntity
     {
         [SerializeField]
