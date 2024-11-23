@@ -182,31 +182,5 @@ namespace PunchGear.Entity
                 yield return null;
             }
         }
-
-        private class MouseInputAction : IMouseInputAction
-        {
-            private readonly Projectile _projectile;
-
-            public MouseInputAction(Projectile projectile)
-            {
-                _projectile = projectile;
-            }
-
-            public void OnMouseDown(MouseInputs inputs)
-            {
-                if (_projectile.Position != _projectile.Player.Position)
-                {
-                    return;
-                }
-                if (inputs == MouseInputs.Left)
-                {
-                    _projectile.Disassemble();
-                }
-                else if (inputs == MouseInputs.Right)
-                {
-                    _projectile.Assemble();
-                }
-            }
-        }
     }
 }
