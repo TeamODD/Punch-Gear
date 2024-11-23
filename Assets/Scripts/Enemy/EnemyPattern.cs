@@ -6,7 +6,7 @@ using PunchGear.Entity;
 
 namespace PunchGear.Enemy
 {
-    public class EnemyPattern : MonoBehaviour
+    public class EnemyPattern : MonoBehaviour, IPlaceableEntity
     {
         public GameObject bullet;
         public GameObject spawnPosition;
@@ -24,7 +24,8 @@ namespace PunchGear.Enemy
         public float term = 1.5f;
         public float smoothTime = 0.2f;
 
-        private EntityPosition _position;
+        [field: SerializeField]
+        public EntityPosition Position { get; private set; }
         private Player _player;
 
         private readonly List<IAttackPattern> _attackPatterns = new List<IAttackPattern>();
@@ -47,8 +48,9 @@ namespace PunchGear.Enemy
 
         private void Start()
         {
-            _position = EntityPosition.Bottom;
+            Position = EntityPosition.Bottom;
             EntityPositionHandler.Instance.SetPosition(this, EntityPosition.Bottom);
+            ProjectileLauncher.Instance.BulletLauncherOrigin = gameObject;
             _attackCoroutine = StartCoroutine(Pattern());
         }
 
@@ -63,22 +65,23 @@ namespace PunchGear.Enemy
         public IEnumerator MoveOppositePosition() // 위치 반전 기계 에디션
         {
             _isMoving = true; // 이동 시작
-            EntityPosition targetPosition = _position switch
+            EntityPosition targetPosition = Position switch
             {
                 EntityPosition.Bottom => EntityPosition.Top,
                 EntityPosition.Top => EntityPosition.Bottom,
                 _ => throw new InvalidOperationException("Undefined value")
             };
             yield return EntityPositionHandler.Instance.SmoothDampPosition(transform, targetPosition, duration, smoothTime);
-            _position = targetPosition;
+            Position = targetPosition;
             _isMoving = false;
         }
 
+        [Obsolete]
         public IEnumerator Launch(float speed)
         {
             GameObject bulletObject = Instantiate(bullet, spawnPosition.transform.position, Quaternion.identity);
             Projectile projectile = bulletObject.GetComponent<Projectile>();
-            projectile.Position = _position;
+            projectile.Position = Position;
             projectile.EnemyOrigin = gameObject;
             projectile.Player = _player;
             yield return new WaitForSeconds(speed); // 시간 지연

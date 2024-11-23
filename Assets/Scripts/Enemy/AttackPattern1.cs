@@ -1,4 +1,5 @@
 using System.Collections;
+using PunchGear.Entity;
 
 namespace PunchGear.Enemy
 {
@@ -15,11 +16,12 @@ namespace PunchGear.Enemy
 
         public IEnumerator GetPatternCoroutine()
         {
-            yield return _enemyPattern.StartCoroutine(_enemyPattern.Launch(_projectileSpeed));
+            ProjectileLauncher launcher = ProjectileLauncher.Instance;
+            yield return _enemyPattern.StartCoroutine(launcher.Launch(_projectileSpeed));
             yield return _enemyPattern.StartCoroutine(_enemyPattern.MoveOppositePosition());
-            yield return _enemyPattern.StartCoroutine(_enemyPattern.Launch(_projectileSpeed));
+            yield return _enemyPattern.StartCoroutine(launcher.Launch(_projectileSpeed));
             yield return _enemyPattern.StartCoroutine(_enemyPattern.MoveOppositePosition());
-            yield return _enemyPattern.StartCoroutine(_enemyPattern.Launch(_projectileSpeed));
+            yield return _enemyPattern.StartCoroutine(launcher.Launch(_projectileSpeed));
         }
     }
 }

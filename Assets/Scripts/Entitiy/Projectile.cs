@@ -56,6 +56,7 @@ namespace PunchGear.Entity
 
         private void OnDisable()
         {
+            ProjectileLauncher.Instance.OnProjectileDestroyed.Invoke(this);
             GloballyPlayerInputHandler globallyPlayerInputHandler = GloballyPlayerInputHandler.Instance;
             globallyPlayerInputHandler.RemoveAction(_action);
         }
