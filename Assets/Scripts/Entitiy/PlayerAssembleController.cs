@@ -32,7 +32,7 @@ namespace PunchGear.Entity
             _style = new GUIStyle();
             _style.fontSize = (int)(40.0f * (Screen.width / 1920f));
 #endif
-            GloballyPlayerInputHandler.Instance.AddAction(new AnimationTransitionAction(this));
+            GloballyPlayerInputHandler.Instance.AddAction(new AnimationTransitionAction(this, _player));
         }
 
         private void Start()
@@ -102,10 +102,12 @@ namespace PunchGear.Entity
         private class AnimationTransitionAction : IMouseInputAction
         {
             private readonly PlayerAssembleController _assembleController;
+            private readonly Player _player;
 
-            public AnimationTransitionAction(PlayerAssembleController assembleController)
+            public AnimationTransitionAction(PlayerAssembleController assembleController, Player player)
             {
                 _assembleController = assembleController;
+                _player = player;
             }
 
             public void OnMouseDown(MouseInputs inputs)
@@ -118,6 +120,7 @@ namespace PunchGear.Entity
                     }
                     _assembleController._animator.SetTrigger("Disassemble");
                     _assembleController.FreezeMouse(MouseAssembleAction.Disassemble);
+                    _player.DisassemblyCooldownIndicator.StartIndicateCooldown(_assembleController.AssembleCooldown);
                 }
                 else if (inputs == MouseInputs.Right)
                 {
@@ -127,6 +130,7 @@ namespace PunchGear.Entity
                     }
                     _assembleController._animator.SetTrigger("Assemble");
                     _assembleController.FreezeMouse(MouseAssembleAction.Assemble);
+                    _player.AssemblyCooldownIndicator.StartIndicateCooldown(_assembleController.AssembleCooldown);
                 }
             }
         }
