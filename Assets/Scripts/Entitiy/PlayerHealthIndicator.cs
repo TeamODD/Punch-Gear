@@ -72,7 +72,7 @@ namespace PunchGear
                 SpriteRenderer renderer = _healthIndicatorItems[i];
                 this.StartBlink(renderer, 2, _blinkRate);
             }
-            if (currentHealth == 0)
+            if (currentHealth == 1)
             {
                 _indicatorHolderSprite.sprite = _profile.BrokenSprite;
             }
