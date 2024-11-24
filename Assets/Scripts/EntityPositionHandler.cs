@@ -14,20 +14,24 @@ namespace PunchGear
         [field: SerializeField]
         public EntityPositionProfile BottomPositionProfile { get; private set; }
 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-        private static void Initialize()
-        {
-            _instance = FindFirstObjectByType<EntityPositionHandler>();
-            if (!_instance)
-            {
-                throw new NullReferenceException("Cannot find any Entity position handler");
-            }
-        }
+        // [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+        // private static void Initialize()
+        // {
+        //     _instance = FindFirstObjectByType<EntityPositionHandler>();
+        //     if (!_instance)
+        //     {
+        //         throw new NullReferenceException("Cannot find any Entity position handler");
+        //     }
+        // }
 
         public static EntityPositionHandler Instance => _instance;
 
         private void Awake()
         {
+            if (_instance)
+            {
+                throw new NullReferenceException("Entity position handler already exists");
+            }
             if (TopPositionProfile == null)
             {
                 throw new NullReferenceException("Top position profile is not provided");
@@ -44,6 +48,12 @@ namespace PunchGear
             {
                 throw new InvalidOperationException("Bottom position profile's position must be bottom");
             }
+            _instance = this;
+        }
+
+        private void OnDisable()
+        {
+            _instance = null;
         }
 
         public EntityPositionProfile this[EntityPosition position]
