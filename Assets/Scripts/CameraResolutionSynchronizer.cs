@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace PunchGear
 {
-    public class Main : MonoBehaviour
+    public class CameraResolutionSynchronizer : MonoBehaviour
     {
         private Camera _camera;
 
