@@ -172,7 +172,8 @@ namespace PunchGear.Entity
                     {
                         return;
                     }
-                    if (_assemblyPoint.EntersProjectile && _assemblyPoint.ProjectileTargets.Any(projectile => !projectile.Assembled))
+                    if (_assemblyPoint.EntersProjectile &&
+                        _assemblyPoint.ProjectileTargets.Any(projectile => projectile.Disassembled && !projectile.Assembled))
                     {
                         AudioManager.Instance.Play(AssembleAudioClip);
                     }
