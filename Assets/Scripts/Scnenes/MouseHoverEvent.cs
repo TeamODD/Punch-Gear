@@ -1,5 +1,6 @@
-using TMPro;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 namespace PunchGear.Scenes
@@ -7,30 +8,31 @@ namespace PunchGear.Scenes
     public class MouseHoverEvent : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField]
-        private AudioClip clip;
-        private AudioSource _audioSource;
+        private AudioClip _clip;
 
-        private TextMeshProUGUI _textMeshProUGUI;
+        [SerializeField]
+        private Sprite[] _titleButton = new Sprite[2]; // 요놈 배경따로 글씨 따로 있어야할듯?
+
+        private Image _image;
+
         private string _originText;
+
+        private Dictionary<string, int> buttonMapping;
 
         private void Start()
         {
-            _textMeshProUGUI = transform.GetChild(0).GetComponent<TextMeshProUGUI>();
-            _originText = _textMeshProUGUI.text;
-
-            _audioSource = GetComponent<AudioSource>();
+            
+            _image = this.GetComponent<Image>();
         }
         public void OnPointerEnter(PointerEventData eventData)
         {
-            _textMeshProUGUI.text = $"< {_originText} >";
-            _audioSource.clip = clip;
-            _audioSource.volume = 0.5f;
-            _audioSource.Play();
+            AudioManager.Instance.Play(_clip);
+            _image.sprite = _titleButton[1];
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            _textMeshProUGUI.text = _originText;
+            _image.sprite = _titleButton[0];
         }
     }
 }

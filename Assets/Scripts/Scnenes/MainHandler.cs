@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -10,8 +11,9 @@ namespace PunchGear.Scenes
         [SerializeField]
         private GameObject _option;
         [SerializeField]
-        private AudioClip clip;
-        private AudioSource _audioSource;
+        private AudioClip _mouseDownClip;
+        [SerializeField]
+        private AudioClip _gameStartClip;
 
         private string _internalScene = "Internal";
         private void Update()
@@ -25,26 +27,32 @@ namespace PunchGear.Scenes
 
         public void StartButton()
         {
-            _audioSource = GetComponent<AudioSource>();
-            _audioSource.clip = this.clip;
-            _audioSource.volume = 0.5f;
-            _audioSource.Play();
+            AudioManager.Instance.Play(_gameStartClip);
             SceneManager.LoadScene(_internalScene);
         }
 
         public void TutorialButton()
         {
+            AudioManager.Instance.Play(_mouseDownClip);
             _tutorial.SetActive(true);
         }
 
         public void OptionButton()
         {
+            AudioManager.Instance.Play(_mouseDownClip);
             _option.SetActive(true);
         }
 
         public void QuitButton()
         {
-            // 에디터에서 실행 중인지 확인 (에디터에서는 종료되지 않기 때문에 메시지를 띄움)
+            AudioManager.Instance.Play(_mouseDownClip);
+            StartCoroutine(DelayAndQuit());
+        }
+
+        IEnumerator DelayAndQuit()
+        {
+            yield return new WaitForSeconds(1f);
+
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
 #else
