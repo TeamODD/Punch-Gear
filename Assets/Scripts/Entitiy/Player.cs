@@ -7,11 +7,19 @@ namespace PunchGear.Entity
     [RequireComponent(typeof(PlayerAssembleController))]
     public class Player : MonoBehaviour, IHealthHolder, IPlaceableEntity
     {
+        private static AudioClip ExplosionAudioClip;
+
         [SerializeField]
         private int _healthPoint;
 
         [SerializeField]
         private GameObject _explosionPrefab;
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+        private static void Initialize()
+        {
+            ExplosionAudioClip = Resources.Load<AudioClip>("Sound/explosion");
+        }
 
         public int Health
         {
@@ -52,6 +60,7 @@ namespace PunchGear.Entity
                 return;
             }
             _explosionPrefab.SetActive(true);
+            AudioManager.Instance.Play(ExplosionAudioClip);
             StartCoroutine(InactiveAfter(0.8f));
         }
 
