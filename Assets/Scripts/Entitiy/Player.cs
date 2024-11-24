@@ -23,6 +23,11 @@ namespace PunchGear.Entity
         [field: SerializeField]
         public EntityPosition Position { get; set; }
 
+        [field: SerializeField]
+        public PlayerAssemblyCooldownIndicator DisassemblyCooldownIndicator { get; private set; }
+        [field: SerializeField]
+        public PlayerAssemblyCooldownIndicator AssemblyCooldownIndicator { get; private set; }
+
         private void Awake()
         {
             Position = EntityPosition.Bottom;
