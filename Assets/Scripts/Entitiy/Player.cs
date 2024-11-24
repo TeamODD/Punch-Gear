@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 namespace PunchGear.Entity
@@ -8,6 +9,9 @@ namespace PunchGear.Entity
     {
         [SerializeField]
         private int _healthPoint;
+
+        [SerializeField]
+        private GameObject _explosionPrefab;
 
         public int Health
         {
@@ -31,8 +35,30 @@ namespace PunchGear.Entity
         private void Awake()
         {
             Position = EntityPosition.Bottom;
+            OnHealthChange += HandleExplosion;
+        }
+
+        private void OnDisable()
+        {
+            OnHealthChange -= HandleExplosion;
         }
 
         public event HealthChangeDelegate OnHealthChange;
+
+        private void HandleExplosion(int previousHealth, int currentHealth)
+        {
+            if (previousHealth <= currentHealth)
+            {
+                return;
+            }
+            _explosionPrefab.SetActive(true);
+            StartCoroutine(InactiveAfter(0.8f));
+        }
+
+        private IEnumerator InactiveAfter(float seconds)
+        {
+            yield return new WaitForSecondsRealtime(seconds);
+            _explosionPrefab.SetActive(false);
+        }
     }
 }
