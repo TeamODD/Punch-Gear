@@ -8,6 +8,9 @@ namespace PunchGear.Entity
 {
     public class Projectile : MonoBehaviour, IProjectile
     {
+        private static AudioClip DisassembleAudioClip;
+        private static AudioClip AssembleAudioClip;
+
         private Rigidbody2D _rigidbody;
         [SerializeField]
         private Rigidbody2D _spriteRigidbody;
@@ -39,6 +42,21 @@ namespace PunchGear.Entity
             get;
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             private set;
+        }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+        private static void LoadAudioClips()
+        {
+            DisassembleAudioClip = Resources.Load<AudioClip>("Sound/분해");
+            AssembleAudioClip = Resources.Load<AudioClip>("Sound/조립");
+            if (DisassembleAudioClip == null)
+            {
+                throw new NullReferenceException("Cannot find Audio clip in the path");
+            }
+            if (AssembleAudioClip == null)
+            {
+                throw new NullReferenceException("Cannot find Audio clip in the path");
+            }
         }
 
         private void Awake()
@@ -121,6 +139,7 @@ namespace PunchGear.Entity
             }
             _disassembled = false;
             _finalized = true;
+            AudioManager.Instance.Play(AssembleAudioClip);
             _animator.SetTrigger("Assemble");
             _rigidbody.linearVelocity = Vector2.zero;
             _rigidbody.bodyType = RigidbodyType2D.Dynamic;
@@ -137,6 +156,7 @@ namespace PunchGear.Entity
                 return;
             }
             _disassembled = true;
+            AudioManager.Instance.Play(DisassembleAudioClip);
             _animator.SetTrigger("Disassemble");
             // _renderer.sprite = _spriteProfile.DisassembleImage;
             _rigidbody.linearVelocity = Vector2.zero;
