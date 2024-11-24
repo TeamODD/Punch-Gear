@@ -8,8 +8,6 @@ namespace PunchGear.Entity
 {
     public class Projectile : MonoBehaviour, IProjectile
     {
-        private static AudioClip DisassembleAudioClip;
-        private static AudioClip AssembleAudioClip;
 
         private Rigidbody2D _rigidbody;
         [SerializeField]
@@ -35,6 +33,10 @@ namespace PunchGear.Entity
         [field: SerializeField]
         public float AssembleFreezeCooldown { get; private set; }
 
+        public bool Disassembled => _disassembled;
+
+        public bool Assembled => _finalized;
+
         [field: SerializeField]
         public float SpinRate
         {
@@ -42,21 +44,6 @@ namespace PunchGear.Entity
             get;
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             private set;
-        }
-
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-        private static void LoadAudioClips()
-        {
-            DisassembleAudioClip = Resources.Load<AudioClip>("Sound/분해");
-            AssembleAudioClip = Resources.Load<AudioClip>("Sound/조립");
-            if (DisassembleAudioClip == null)
-            {
-                throw new NullReferenceException("Cannot find Audio clip in the path");
-            }
-            if (AssembleAudioClip == null)
-            {
-                throw new NullReferenceException("Cannot find Audio clip in the path");
-            }
         }
 
         private void Awake()
@@ -131,41 +118,37 @@ namespace PunchGear.Entity
             }
         }
 
-        public void Assemble()
+        public bool Assemble()
         {
             if (!_canPlayerManipulate || !_disassembled || _isAssembleFrozen)
             {
-                return;
+                return false;
             }
             _disassembled = false;
             _finalized = true;
-            AudioManager.Instance.Play(AssembleAudioClip);
             _animator.SetTrigger("Assemble");
             _rigidbody.linearVelocity = Vector2.zero;
             _rigidbody.bodyType = RigidbodyType2D.Dynamic;
             _rigidbody.gravityScale = 0;
-            // _renderer.sprite = _spriteProfile.AssembleImage;
-            Debug.Log("Successfully assembled");
             ChaseEnemy();
+            return true;
         }
 
-        public void Disassemble()
+        public bool Disassemble()
         {
             if (!_canPlayerManipulate || _disassembled || _finalized)
             {
-                return;
+                return false;
             }
             _disassembled = true;
-            AudioManager.Instance.Play(DisassembleAudioClip);
             _animator.SetTrigger("Disassemble");
-            // _renderer.sprite = _spriteProfile.DisassembleImage;
             _rigidbody.linearVelocity = Vector2.zero;
             _rigidbody.bodyType = RigidbodyType2D.Dynamic;
             _rigidbody.AddForceY(10f, ForceMode2D.Impulse);
             _rigidbody.gravityScale = 2f;
             _isAssembleFrozen = true;
             FreezeAssemble();
-            Debug.Log("Successfully disassembled");
+            return true;
         }
 
         private void FreezeAssemble()
@@ -191,17 +174,6 @@ namespace PunchGear.Entity
         {
             float smoothTime = 0.2f;
             Vector2 velocityVector = Vector2.zero;
-            // float entireAngle = 360;
-            // float angleDelta = entireAngle * SpinRate;
-            // while (_spriteRigidbody.rotation < entireAngle)
-            // {
-            //     float angle = _spriteRigidbody.rotation + angleDelta * Time.deltaTime;
-            //     _spriteRigidbody.SetRotation(angle);
-            //     yield return null;
-            // }
-            // _spriteRigidbody.linearVelocity = Vector2.zero;
-            // _spriteRigidbody.SetRotation(0);
-            // yield return null;
             yield return new WaitForSecondsRealtime(0.2f);
             while (true)
             {
@@ -209,7 +181,7 @@ namespace PunchGear.Entity
                     transform.position,
                     EnemyOrigin.transform.position,
                     ref velocityVector,
-                    smoothTime // 감속 시간
+                    smoothTime
                 );
                 yield return null;
             }
