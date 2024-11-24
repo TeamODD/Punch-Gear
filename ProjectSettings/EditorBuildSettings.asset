@@ -8,24 +8,24 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/SampleScene.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
-  - enabled: 0
+  - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: e7176b4dff750644292579170b41a20a
+  - enabled: 1
+    path: Assets/Scenes/MainStage.unity
+    guid: e9c51227e398f42da8f1c5a6d2194dbc
+  - enabled: 1
     path: Assets/Scenes/GaemClear.unity
     guid: 372c06a1894aa194ab6b73802a8b482a
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/GameOver.unity
     guid: 984d4ea777fb068448f74726df077340
   - enabled: 0
     path: Assets/Scenes/Internal.unity
     guid: 1826e38e341c27842a6e9b7d1572d9c9
   - enabled: 0
-    path: Assets/Scenes/MainMenu.unity
-    guid: e7176b4dff750644292579170b41a20a
-  - enabled: 0
     path: Assets/Scenes/ProjectileDebugs.unity
     guid: 228157906f9c44f86a0d244fb240a3d9
-  - enabled: 1
-    path: Assets/Scenes/MainStage.unity
-    guid: e9c51227e398f42da8f1c5a6d2194dbc
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

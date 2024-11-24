@@ -13,17 +13,17 @@ namespace PunchGear.Entity
 
         private static readonly KeyCode[] KeyCodes = Enum.GetValues(typeof(KeyCode)).Cast<KeyCode>().ToArray();
 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        private static void Initialize()
-        {
-            if (_instance)
-            {
-                return;
-            }
-            GameObject gameObject = new GameObject("Player Input Handler", typeof(GloballyPlayerInputHandler));
-            _instance = gameObject.GetComponent<GloballyPlayerInputHandler>();
-            DontDestroyOnLoad(gameObject);
-        }
+        // [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        // private static void Initialize()
+        // {
+        //     if (_instance)
+        //     {
+        //         return;
+        //     }
+        //     GameObject gameObject = new GameObject("Player Input Handler", typeof(GloballyPlayerInputHandler));
+        //     _instance = gameObject.GetComponent<GloballyPlayerInputHandler>();
+        //     DontDestroyOnLoad(gameObject);
+        // }
 
         public static GloballyPlayerInputHandler Instance => _instance;
 
@@ -37,6 +37,7 @@ namespace PunchGear.Entity
             {
                 throw new InvalidOperationException("Mouse not detected.");
             }
+            _instance = this;
             Debug.Log("Player Input Handler initialized");
         }
 
@@ -44,6 +45,7 @@ namespace PunchGear.Entity
         {
             _keyboardInputActions.Clear();
             _mouseInputActions.Clear();
+            _instance = null;
         }
 
         private void Start()
