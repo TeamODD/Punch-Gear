@@ -15,7 +15,16 @@ namespace PunchGear.Scenes
         [SerializeField]
         private AudioClip _gameStartClip;
 
+        [SerializeField]
+        private AudioClip _clip;
+
         private string _internalScene = "Internal";
+
+        private void Start()
+        {
+            AudioManager.Instance.PlayLoop(_clip);
+        }
+
         private void Update()
         {
             if (Input.GetKey(KeyCode.Escape))
@@ -47,6 +56,12 @@ namespace PunchGear.Scenes
         {
             AudioManager.Instance.Play(_mouseDownClip);
             StartCoroutine(DelayAndQuit());
+        }
+
+        public void CloseButton()
+        {
+            AudioManager.Instance.Play(_mouseDownClip);
+            _option.SetActive(false);
         }
 
         IEnumerator DelayAndQuit()
