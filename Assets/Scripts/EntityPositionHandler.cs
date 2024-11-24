@@ -22,8 +22,6 @@ namespace PunchGear
             {
                 throw new NullReferenceException("Cannot find any Entity position handler");
             }
-
-            DontDestroyOnLoad(_instance);
         }
 
         public static EntityPositionHandler Instance => _instance;
