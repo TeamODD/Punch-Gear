@@ -11,8 +11,6 @@ namespace PunchGear.Scenes
         private GameObject _option;
 
         private string _internalScene = "Internal";
-        
-
         private void Update()
         {
             if (Input.GetKey(KeyCode.Escape))
@@ -39,7 +37,12 @@ namespace PunchGear.Scenes
 
         public void QuitButton()
         {
-            // 대충 복붙
+            // 에디터에서 실행 중인지 확인 (에디터에서는 종료되지 않기 때문에 메시지를 띄움)
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit(); // 실제 빌드된 게임에서 실행 시 게임을 종료
+#endif
         }
     }
 }
