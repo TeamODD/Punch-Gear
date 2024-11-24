@@ -18,7 +18,7 @@ namespace PunchGear.Scenes
         [SerializeField]
         private AudioClip _clip;
 
-        private string _internalScene = "Internal";
+        private string _internalScene = "MainStage";
 
         private void Start()
         {
