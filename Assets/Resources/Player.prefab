@@ -627,7 +627,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _healthPoint: 3
-  _explosionPrefab: {fileID: 3121847219011696124, guid: cfb388528b5314cb180fe67c8a6ad653, type: 3}
+  _explosionPrefab: {fileID: 7030490335434594446}
   <Position>k__BackingField: 0
   <DisassemblyCooldownIndicator>k__BackingField: {fileID: 7113122624116455236}
   <AssemblyCooldownIndicator>k__BackingField: {fileID: 6301297117182422897}
@@ -1200,5 +1200,10 @@ PrefabInstance:
 --- !u!4 &7030490335434594441 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3121847219011696123, guid: cfb388528b5314cb180fe67c8a6ad653, type: 3}
+  m_PrefabInstance: {fileID: 5386962900195667314}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7030490335434594446 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3121847219011696124, guid: cfb388528b5314cb180fe67c8a6ad653, type: 3}
   m_PrefabInstance: {fileID: 5386962900195667314}
   m_PrefabAsset: {fileID: 0}
