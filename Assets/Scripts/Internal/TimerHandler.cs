@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 
 namespace PunchGear
@@ -9,7 +8,9 @@ namespace PunchGear
     {
         public TextMeshProUGUI textMeshProText;
 
-        private int _minutes = 0, _seconds = 0, _milliseconds = 0;
+        private int _minutes = 0;
+        private int _seconds = 0;
+        private int _milliseconds = 0;
 
         void Start()
         {
@@ -18,17 +19,17 @@ namespace PunchGear
 
         private IEnumerator TimerCoroutine()
         {
-            while (_minutes <= 2)
+            while (true)
             {
-                yield return new WaitForSeconds(0.01f); // 0.01초 대기
+                yield return new WaitForSecondsRealtime(0.01f); // 0.01초 대기
 
                 _milliseconds++;
-                if(_milliseconds == 100)
+                if (_milliseconds == 100)
                 {
                     _milliseconds = 0;
                     _seconds++;
 
-                    if(_seconds == 60)
+                    if (_seconds == 60)
                     {
                         _seconds = 0;
                         _minutes++;

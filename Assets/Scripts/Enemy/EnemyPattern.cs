@@ -30,16 +30,19 @@ namespace PunchGear.Enemy
         [field: SerializeField]
         public EntityPosition Position { get; private set; }
 
+        private NobilityAnimationController _animationController;
+
         private readonly List<IAttackPattern> _attackPatterns = new List<IAttackPattern>();
 
         private void Awake()
         {
-            _attackPatterns.Add(new AttackPattern1(this));
-            _attackPatterns.Add(new AttackPattern2(this));
-            _attackPatterns.Add(new AttackPattern3(this));
-            _attackPatterns.Add(new AttackPattern4(this));
-            _attackPatterns.Add(new AttackPattern5(this));
-            _attackPatterns.Add(new AttackPattern6(this));
+            _animationController = GetComponent<NobilityAnimationController>();
+            _attackPatterns.Add(new AttackPattern1(this, _animationController));
+            _attackPatterns.Add(new AttackPattern2(this, _animationController));
+            _attackPatterns.Add(new AttackPattern3(this, _animationController));
+            _attackPatterns.Add(new AttackPattern4(this, _animationController));
+            _attackPatterns.Add(new AttackPattern5(this, _animationController));
+            _attackPatterns.Add(new AttackPattern6(this, _animationController));
 
             _player = FindFirstObjectByType<Player>();
             if (_player == null)

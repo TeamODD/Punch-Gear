@@ -9,28 +9,33 @@ namespace PunchGear.Enemy
     public class AttackPattern5 : IAttackPattern
     {
         private readonly EnemyPattern _enemyPattern;
+        private readonly NobilityAnimationController _animationController;
         private List<Func<IEnumerator>> _actions;
 
-        public AttackPattern5(EnemyPattern enemyPattern)
+        public AttackPattern5(EnemyPattern enemyPattern, NobilityAnimationController animationController)
         {
             _enemyPattern = enemyPattern;
+            _animationController = animationController;
             _actions = new List<Func<IEnumerator>>
             {
-                () => _enemyPattern.JoinCoroutines(_enemyPattern.MoveOppositePosition(), new WaitForSecondsRealtime(_enemyPattern.fast)),
+                () => _enemyPattern.JoinCoroutines(
+                    _enemyPattern.MoveOppositePosition(),
+                    _animationController.TransitAnimationRoutine(),
+                    new WaitForSecondsRealtime(_enemyPattern.fast)),
                 () =>
                 {
                     ProjectileLauncher launcher = ProjectileLauncher.Instance;
-                    return launcher.Launch(enemyPattern.slow);
+                    return _enemyPattern.JoinCoroutines(launcher.Launch(_enemyPattern.fast), _animationController.TransitAnimationRoutine());
                 },
                 () =>
                 {
                     ProjectileLauncher launcher = ProjectileLauncher.Instance;
-                    return launcher.Launch(enemyPattern.normal);
+                    return _enemyPattern.JoinCoroutines(launcher.Launch(_enemyPattern.fast), _animationController.TransitAnimationRoutine());
                 },
                 () =>
                 {
                     ProjectileLauncher launcher = ProjectileLauncher.Instance;
-                    return launcher.Launch(_enemyPattern.fast);
+                    return _enemyPattern.JoinCoroutines(launcher.Launch(0), _animationController.TransitAnimationRoutine());
                 }
             };
         }
