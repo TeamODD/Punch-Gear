@@ -1961,7 +1961,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6830348241947001357, guid: 11f48ae4ade1f6547a8495a09da44e29, type: 3}
       propertyPath: m_SortingOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7169783917464954178, guid: 11f48ae4ade1f6547a8495a09da44e29, type: 3}
       propertyPath: <AssembleCooldown>k__BackingField

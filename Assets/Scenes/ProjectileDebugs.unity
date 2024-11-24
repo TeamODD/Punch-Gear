@@ -306,6 +306,10 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 2368526820679862041, guid: 11f48ae4ade1f6547a8495a09da44e29, type: 3}
+      propertyPath: _explosionPrefab
+      value: 
+      objectReference: {fileID: 421059242}
     - target: {fileID: 3582814606517070286, guid: 11f48ae4ade1f6547a8495a09da44e29, type: 3}
       propertyPath: m_TagString
       value: Player
@@ -373,6 +377,11 @@ PrefabInstance:
 --- !u!4 &421059241 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5134368038764861956, guid: 11f48ae4ade1f6547a8495a09da44e29, type: 3}
+  m_PrefabInstance: {fileID: 421059240}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &421059242 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7030490335434594446, guid: 11f48ae4ade1f6547a8495a09da44e29, type: 3}
   m_PrefabInstance: {fileID: 421059240}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &572161634
