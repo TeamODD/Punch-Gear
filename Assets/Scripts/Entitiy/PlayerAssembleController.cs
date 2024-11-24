@@ -1,11 +1,18 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace PunchGear.Entity
 {
     public class PlayerAssembleController : MonoBehaviour
     {
+        private static AudioClip DisassembleAudioClip;
+        private static AudioClip DisassembleMissAudioClip;
+        private static AudioClip AssembleAudioClip;
+        private static AudioClip AssembleMissAudioClip;
+
         private Player _player;
         private Dictionary<Projectile, IMouseInputAction> _mouseInputActionLookup;
 
@@ -17,14 +24,35 @@ namespace PunchGear.Entity
         private bool _isAssembleFrozen;
         private bool _isDisassembleFrozen;
 
+        private AssemblyPoint[] _assemblyPoints;
+
+
 #if UNITY_EDITOR
         private GUIStyle _style;
 #endif
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+        private static void LoadAudioClips()
+        {
+            DisassembleAudioClip = Resources.Load<AudioClip>("Sound/분해");
+            AssembleAudioClip = Resources.Load<AudioClip>("Sound/조립");
+            DisassembleMissAudioClip = Resources.Load<AudioClip>("Sound/분해 실수");
+            AssembleMissAudioClip = Resources.Load<AudioClip>("Sound/조립 실수");
+            if (DisassembleAudioClip == null)
+            {
+                throw new NullReferenceException("Cannot find Audio clip in the path");
+            }
+            if (AssembleAudioClip == null)
+            {
+                throw new NullReferenceException("Cannot find Audio clip in the path");
+            }
+        }
 
         private void Awake()
         {
             _player = GetComponent<Player>();
             _animator = GetComponent<Animator>();
+            _assemblyPoints = FindObjectsByType<AssemblyPoint>(FindObjectsSortMode.None);
             _mouseInputActionLookup = new Dictionary<Projectile, IMouseInputAction>();
             _isAssembleFrozen = false;
             _isDisassembleFrozen = false;
@@ -33,6 +61,11 @@ namespace PunchGear.Entity
             _style.fontSize = (int)(40.0f * (Screen.width / 1920f));
 #endif
             GloballyPlayerInputHandler.Instance.AddAction(new AnimationTransitionAction(this, _player));
+
+            foreach (AssemblyPoint assemblyPoint in _assemblyPoints)
+            {
+                GloballyPlayerInputHandler.Instance.AddAction(new AudioEffectAction(assemblyPoint, this, _player));
+            }
         }
 
         private void Start()
@@ -97,6 +130,58 @@ namespace PunchGear.Entity
         {
             Assemble,
             Disassemble
+        }
+
+        private class AudioEffectAction : IMouseInputAction
+        {
+            private readonly AssemblyPoint _assemblyPoint;
+            private readonly PlayerAssembleController _assembleController;
+            private readonly Player _player;
+
+            public AudioEffectAction(AssemblyPoint assemblyPoint, PlayerAssembleController assembleController, Player player)
+            {
+                _assemblyPoint = assemblyPoint;
+                _player = player;
+                _assembleController = assembleController;
+            }
+
+            public void OnMouseDown(MouseInputs inputs)
+            {
+                if (_assemblyPoint.Position != _player.Position)
+                {
+                    return;
+                }
+                if (inputs == MouseInputs.Left)
+                {
+                    if (_assembleController._isDisassembleFrozen)
+                    {
+                        return;
+                    }
+                    if (_assemblyPoint.EntersProjectile && _assemblyPoint.ProjectileTargets.Any(projectile => !projectile.Disassembled))
+                    {
+                        AudioManager.Instance.Play(DisassembleAudioClip);
+                    }
+                    else
+                    {
+                        AudioManager.Instance.Play(DisassembleMissAudioClip);
+                    }
+                }
+                else if (inputs == MouseInputs.Right)
+                {
+                    if (_assembleController._isAssembleFrozen)
+                    {
+                        return;
+                    }
+                    if (_assemblyPoint.EntersProjectile && _assemblyPoint.ProjectileTargets.Any(projectile => !projectile.Assembled))
+                    {
+                        AudioManager.Instance.Play(AssembleAudioClip);
+                    }
+                    else
+                    {
+                        AudioManager.Instance.Play(AssembleMissAudioClip);
+                    }
+                }
+            }
         }
 
         private class AnimationTransitionAction : IMouseInputAction
