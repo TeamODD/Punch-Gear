@@ -23,6 +23,7 @@ namespace PunchGear.Entity
 
         private bool _isAssembleFrozen;
         private bool _isDisassembleFrozen;
+        private bool _disabled;
 
         private AssemblyPoint[] _assemblyPoints;
 
@@ -79,6 +80,10 @@ namespace PunchGear.Entity
             });
             launcher.OnProjectileDestroyed.AddListener(projectile =>
             {
+                if (_disabled)
+                {
+                    return;
+                }
                 IMouseInputAction action = _mouseInputActionLookup[projectile];
                 GloballyPlayerInputHandler.Instance.RemoveAction(action);
                 _mouseInputActionLookup.Remove(projectile);
@@ -96,6 +101,7 @@ namespace PunchGear.Entity
         private void OnDisable()
         {
             StopAllCoroutines();
+            _disabled = true;
         }
 
         private void FreezeMouse(MouseAssembleAction assembleAction)
