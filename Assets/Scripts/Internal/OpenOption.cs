@@ -23,7 +23,6 @@ namespace PunchGear.Internal
             }
         }
 
-
         public void OpenEvent()
         {
             Panel.SetActive(!isPaused);
