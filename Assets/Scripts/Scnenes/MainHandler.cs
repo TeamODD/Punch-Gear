@@ -9,6 +9,9 @@ namespace PunchGear.Scenes
         private GameObject _tutorial;
         [SerializeField]
         private GameObject _option;
+        [SerializeField]
+        private AudioClip clip;
+        private AudioSource _audioSource;
 
         private string _internalScene = "Internal";
         private void Update()
@@ -22,6 +25,10 @@ namespace PunchGear.Scenes
 
         public void StartButton()
         {
+            _audioSource = GetComponent<AudioSource>();
+            _audioSource.clip = this.clip;
+            _audioSource.volume = 0.5f;
+            _audioSource.Play();
             SceneManager.LoadScene(_internalScene);
         }
 
