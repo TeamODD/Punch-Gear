@@ -34,7 +34,7 @@ namespace PunchGear.Scenes
 
         public void OptionButton()
         {
-
+            _option.SetActive(true);
         }
 
         public void QuitButton()
