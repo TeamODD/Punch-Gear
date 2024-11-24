@@ -2,8 +2,12 @@ namespace PunchGear.Entity
 {
     public interface IProjectile
     {
-        public void Assemble();
+        public bool Disassembled { get; }
 
-        public void Disassemble();
+        public bool Assembled { get; }
+
+        public bool Assemble();
+
+        public bool Disassemble();
     }
 }
