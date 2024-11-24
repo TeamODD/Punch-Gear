@@ -5,15 +5,41 @@ namespace PunchGear.Scenes
 {
     public class MainHandler : MonoBehaviour
     {
-        private string internalScene = "Internal";
+        [SerializeField]
+        private GameObject _tutorial;
+        [SerializeField]
+        private GameObject _option;
 
-        void Update()
+        private string _internalScene = "Internal";
+        
+
+        private void Update()
         {
-            if (Input.anyKeyDown)
+            if (Input.GetKey(KeyCode.Escape))
             {
-                SceneManager.LoadScene(internalScene);
+                _tutorial.SetActive(false);
+                _option.SetActive(false);
             }
+        }
 
+        public void StartButton()
+        {
+            SceneManager.LoadScene(_internalScene);
+        }
+
+        public void TutorialButton()
+        {
+            _tutorial.SetActive(true);
+        }
+
+        public void OptionButton()
+        {
+
+        }
+
+        public void QuitButton()
+        {
+            // 대충 복붙
         }
     }
 }
