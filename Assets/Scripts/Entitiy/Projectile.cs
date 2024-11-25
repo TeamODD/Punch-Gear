@@ -1,25 +1,18 @@
 using System;
 using System.Collections;
-using System.Runtime.CompilerServices;
+
 using PunchGear.Enemy;
+
 using UnityEngine;
 
 namespace PunchGear.Entity
 {
-    public class Projectile : MonoBehaviour, IProjectile
+    public class Projectile : MonoBehaviour, IProjectile, IPlaceableEntity
     {
+        private static readonly int DisassembleAnimation = Animator.StringToHash("Disassemble");
+        private static readonly int Assemble1 = Animator.StringToHash("Assemble");
 
-        private Rigidbody2D _rigidbody;
-        [SerializeField]
-        private Rigidbody2D _spriteRigidbody;
-        private Animator _animator;
-
-        private Coroutine _chaseEnemyAnimationCoroutine;
-
-        private bool _canPlayerManipulate;
-        private bool _disassembled;
-        private bool _isAssembleFrozen;
-        private bool _finalized;
+        [SerializeField] private Rigidbody2D _spriteRigidbody;
 
         [field: SerializeField]
         public EntityPosition Position { get; set; }
@@ -33,18 +26,11 @@ namespace PunchGear.Entity
         [field: SerializeField]
         public float AssembleFreezeCooldown { get; private set; }
 
-        public bool Disassembled => _disassembled;
-
-        public bool Assembled => _finalized;
-
-        [field: SerializeField]
-        public float SpinRate
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get;
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            private set;
-        }
+        private Animator _animator;
+        private Rigidbody2D _rigidbody;
+        private bool _canPlayerManipulate;
+        private bool _isAssembleFrozen;
+        private Coroutine _chaseEnemyAnimationCoroutine;
 
         private void Awake()
         {
@@ -55,26 +41,28 @@ namespace PunchGear.Entity
             _rigidbody = GetComponent<Rigidbody2D>();
             _animator = GetComponent<Animator>();
             _canPlayerManipulate = false;
-            _disassembled = false;
+            State = ProjectileState.Launched;
+            Disassembled = false;
             _isAssembleFrozen = false;
-            _finalized = false;
+            Assembled = false;
         }
 
         private void Start()
         {
             _canPlayerManipulate = false;
-            _disassembled = false;
+            Disassembled = false;
             _isAssembleFrozen = false;
-            _finalized = false;
+            Assembled = false;
         }
 
-        private void OnDisable()
+        private void OnDestroy()
         {
             ProjectileLauncher.Instance.OnProjectileDestroyed.Invoke(this);
         }
 
         private void OnTriggerEnter2D(Collider2D collider)
         {
+            OnCollisionEnter?.Invoke(collider);
             GameObject target = collider.gameObject;
             if (target.CompareTag("GameController"))
             {
@@ -88,7 +76,7 @@ namespace PunchGear.Entity
             }
             if (target.CompareTag("Nobility"))
             {
-                if (_disassembled || _chaseEnemyAnimationCoroutine == null)
+                if (Disassembled || _chaseEnemyAnimationCoroutine == null)
                 {
                     return;
                 }
@@ -99,7 +87,7 @@ namespace PunchGear.Entity
             }
             if (target.CompareTag("Player"))
             {
-                if (_disassembled || _finalized)
+                if (Disassembled || Assembled)
                 {
                     return;
                 }
@@ -111,6 +99,7 @@ namespace PunchGear.Entity
 
         private void OnTriggerExit2D(Collider2D collider)
         {
+            OnCollisionExit?.Invoke(collider);
             GameObject target = collider.gameObject;
             if (target.CompareTag("GameController"))
             {
@@ -118,37 +107,44 @@ namespace PunchGear.Entity
             }
         }
 
-        public bool Assemble()
+        [field: SerializeField]
+        public ProjectileState State { get; private set; }
+
+        [field: SerializeField]
+        public bool Disassembled { get; private set; }
+
+        [field: SerializeField]
+        public bool Assembled { get; private set; }
+
+        public void Assemble()
         {
-            if (!_canPlayerManipulate || !_disassembled || _isAssembleFrozen)
+            if (!_canPlayerManipulate || !Disassembled || _isAssembleFrozen)
             {
-                return false;
+                return;
             }
-            _disassembled = false;
-            _finalized = true;
-            _animator.SetTrigger("Assemble");
+            Disassembled = false;
+            Assembled = true;
+            _animator.SetTrigger(Assemble1);
             _rigidbody.linearVelocity = Vector2.zero;
             _rigidbody.bodyType = RigidbodyType2D.Dynamic;
             _rigidbody.gravityScale = 0;
             ChaseEnemy();
-            return true;
         }
 
-        public bool Disassemble()
+        public void Disassemble()
         {
-            if (!_canPlayerManipulate || _disassembled || _finalized)
+            if (!_canPlayerManipulate || Disassembled || Assembled)
             {
-                return false;
+                return;
             }
-            _disassembled = true;
-            _animator.SetTrigger("Disassemble");
+            Disassembled = true;
+            _animator.SetTrigger(DisassembleAnimation);
             _rigidbody.linearVelocity = Vector2.zero;
             _rigidbody.bodyType = RigidbodyType2D.Dynamic;
             _rigidbody.AddForceY(10f, ForceMode2D.Impulse);
             _rigidbody.gravityScale = 2f;
             _isAssembleFrozen = true;
             FreezeAssemble();
-            return true;
         }
 
         private void FreezeAssemble()
@@ -181,10 +177,13 @@ namespace PunchGear.Entity
                     transform.position,
                     EnemyOrigin.transform.position,
                     ref velocityVector,
-                    smoothTime
-                );
+                    smoothTime);
                 yield return null;
             }
         }
+
+        public event CollisionEnterDelegate OnCollisionEnter;
+
+        public event CollisionExitDelegate OnCollisionExit;
     }
 }
