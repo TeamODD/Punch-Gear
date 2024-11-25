@@ -6,6 +6,7 @@ using UnityEngine;
 namespace PunchGear
 {
     [DisallowMultipleComponent]
+    [DefaultExecutionOrder(-50)]
     public class EntityPositionHandler : MonoBehaviour
     {
         public static EntityPositionHandler Instance { get; private set; }
