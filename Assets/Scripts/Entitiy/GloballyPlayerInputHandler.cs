@@ -2,30 +2,19 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace PunchGear.Entity
 {
+    [DisallowMultipleComponent]
+    [DefaultExecutionOrder(-50)]
     public class GloballyPlayerInputHandler : MonoBehaviour, IMouseInputHandler, IKeyboardInputHandler
     {
-        private static GloballyPlayerInputHandler _instance;
-
         private static readonly KeyCode[] KeyCodes = Enum.GetValues(typeof(KeyCode)).Cast<KeyCode>().ToArray();
 
-        // [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        // private static void Initialize()
-        // {
-        //     if (_instance)
-        //     {
-        //         return;
-        //     }
-        //     GameObject gameObject = new GameObject("Player Input Handler", typeof(GloballyPlayerInputHandler));
-        //     _instance = gameObject.GetComponent<GloballyPlayerInputHandler>();
-        //     DontDestroyOnLoad(gameObject);
-        // }
-
-        public static GloballyPlayerInputHandler Instance => _instance;
+        public static GloballyPlayerInputHandler Instance { get; private set; }
 
         private readonly KeyCodeInputPool _keyCodeInputPool = new KeyCodeInputPool();
         private readonly List<IKeyboardInputAction> _keyboardInputActions = new List<IKeyboardInputAction>();
@@ -37,7 +26,7 @@ namespace PunchGear.Entity
             {
                 throw new InvalidOperationException("Mouse not detected.");
             }
-            _instance = this;
+            Instance = this;
             Debug.Log("Player Input Handler initialized");
         }
 
@@ -45,11 +34,7 @@ namespace PunchGear.Entity
         {
             _keyboardInputActions.Clear();
             _mouseInputActions.Clear();
-            _instance = null;
-        }
-
-        private void Start()
-        {
+            Instance = null;
         }
 
         private void FixedUpdate()
@@ -123,14 +108,8 @@ namespace PunchGear.Entity
 
         private class KeyCodeInputPool : IList<KeyCode>
         {
-            private readonly KeyCode[] _inputEvents;
+            private readonly KeyCode[] _inputEvents = new KeyCode[KeyCodes.Length];
             private int _position;
-
-            public KeyCodeInputPool()
-            {
-                _inputEvents = new KeyCode[KeyCodes.Length];
-                _position = 0;
-            }
 
             public int Count
             {
@@ -140,7 +119,13 @@ namespace PunchGear.Entity
                 }
             }
 
-            public bool IsReadOnly => false;
+            public bool IsReadOnly
+            {
+                get
+                {
+                    return false;
+                }
+            }
 
             public KeyCode this[int index]
             {
@@ -154,7 +139,15 @@ namespace PunchGear.Entity
                 }
                 set
                 {
-                    throw new NotImplementedException();
+                    if (index < 0 || index > _position || index >= KeyCodes.Length)
+                    {
+                        throw new IndexOutOfRangeException(nameof(index));
+                    }
+                    _inputEvents[index] = value;
+                    if (index == _position)
+                    {
+                        _position++;
+                    }
                 }
             }
 
@@ -172,22 +165,43 @@ namespace PunchGear.Entity
 
             public void Insert(int index, KeyCode item)
             {
-                throw new NotImplementedException();
+                if (index < 0 || index > _position || index >= KeyCodes.Length)
+                {
+                    throw new IndexOutOfRangeException(nameof(index));
+                }
+                for (int i = _position; i > index; i--)
+                {
+                    _inputEvents[i] = _inputEvents[i - 1];
+                }
+                _inputEvents[index] = item;
             }
 
             public void RemoveAt(int index)
             {
-                throw new NotImplementedException();
+                if (index < 0 || index >= _position)
+                {
+                    throw new IndexOutOfRangeException(nameof(index));
+                }
+                _position--;
+                for (int i = index; i < _position; i++)
+                {
+                    _inputEvents[i] = _inputEvents[i + 1];
+                }
+                _inputEvents[_position] = KeyCode.None;
             }
 
             public void Add(KeyCode item)
             {
-                throw new NotImplementedException();
+                Insert(_position, item);
             }
 
             public void Clear()
             {
-                throw new NotImplementedException();
+                for (int i = 0; i < _position; i++)
+                {
+                    _inputEvents[i] = KeyCode.None;
+                }
+                _position = 0;
             }
 
             public bool Contains(KeyCode item)
@@ -202,7 +216,16 @@ namespace PunchGear.Entity
 
             public bool Remove(KeyCode item)
             {
-                throw new NotImplementedException();
+                for (int i = 0; i < _position; i++)
+                {
+                    if (_inputEvents[i] != item)
+                    {
+                        continue;
+                    }
+                    RemoveAt(i);
+                    return true;
+                }
+                return false;
             }
 
             public void Update()
@@ -210,7 +233,7 @@ namespace PunchGear.Entity
                 _position = 0;
                 for (int i = 0; i < KeyCodes.Length; i++)
                 {
-                    KeyCode keyCode = (KeyCode)i;
+                    KeyCode keyCode = (KeyCode) i;
                     if (Input.GetKey(keyCode))
                     {
                         _inputEvents[_position] = keyCode;
@@ -218,6 +241,7 @@ namespace PunchGear.Entity
                     }
                 }
             }
+
             public IEnumerator<KeyCode> GetEnumerator()
             {
                 for (int i = 0; i < _position; i++)
