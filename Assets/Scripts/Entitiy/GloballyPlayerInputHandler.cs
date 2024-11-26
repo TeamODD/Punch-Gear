@@ -5,6 +5,7 @@ using System.Linq;
 
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
 
 namespace PunchGear.Entity
 {
@@ -19,6 +20,10 @@ namespace PunchGear.Entity
         private readonly KeyCodeInputPool _keyCodeInputPool = new KeyCodeInputPool();
         private readonly List<IKeyboardInputAction> _keyboardInputActions = new List<IKeyboardInputAction>();
         private readonly List<IMouseInputAction> _mouseInputActions = new List<IMouseInputAction>();
+
+        private bool _isLeftButtonPressed;
+        private bool _isRightButtonPressed;
+        private bool _isMiddleButtonPressed;
 
         private void Awake()
         {
@@ -63,18 +68,9 @@ namespace PunchGear.Entity
             Mouse mouse = Mouse.current;
             mouse.leftButton.pressPoint = 0.01f;
             mouse.rightButton.pressPoint = 0.01f;
-            if (mouse.leftButton.isPressed)
-            {
-                inputs |= MouseInputs.Left;
-            }
-            if (mouse.rightButton.isPressed)
-            {
-                inputs |= MouseInputs.Right;
-            }
-            if (mouse.middleButton.isPressed)
-            {
-                inputs |= MouseInputs.Scroll;
-            }
+            CheckMouseClick(mouse.leftButton, MouseInputs.Left, ref inputs, ref _isLeftButtonPressed);
+            CheckMouseClick(mouse.rightButton, MouseInputs.Right, ref inputs, ref _isRightButtonPressed);
+            CheckMouseClick(mouse.middleButton, MouseInputs.Scroll, ref inputs, ref _isMiddleButtonPressed);
             return inputs;
         }
 
@@ -104,6 +100,23 @@ namespace PunchGear.Entity
         public void RemoveAction(IMouseInputAction action)
         {
             _mouseInputActions.Remove(action);
+        }
+
+        private void CheckMouseClick(
+            ButtonControl button,
+            MouseInputs value,
+            ref MouseInputs inputs,
+            ref bool isPressed)
+        {
+            if (!isPressed && button.isPressed)
+            {
+                inputs |= value;
+                isPressed = true;
+            }
+            else if (!button.isPressed)
+            {
+                isPressed = false;
+            }
         }
 
         private class KeyCodeInputPool : IList<KeyCode>
