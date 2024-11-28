@@ -1,6 +1,5 @@
 using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
+
 using TMPro;
 
 namespace PunchGear.Scenes
@@ -10,7 +9,7 @@ namespace PunchGear.Scenes
         public TextMeshProUGUI textMeshProText;
         private string _originText;
 
-        void Start()
+        private void Start()
         {
             textMeshProText = GetComponent<TextMeshProUGUI>();
             _originText = textMeshProText.text;

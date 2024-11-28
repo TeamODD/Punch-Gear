@@ -1,4 +1,5 @@
 using System.Collections;
+
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -8,10 +9,13 @@ namespace PunchGear.Scenes
     {
         [SerializeField]
         private GameObject _tutorial;
+
         [SerializeField]
         private GameObject _option;
+
         [SerializeField]
         private AudioClip _mouseDownClip;
+
         [SerializeField]
         private AudioClip _gameStartClip;
 
@@ -64,7 +68,7 @@ namespace PunchGear.Scenes
             _option.SetActive(false);
         }
 
-        IEnumerator DelayAndQuit()
+        private IEnumerator DelayAndQuit()
         {
             yield return new WaitForSeconds(1f);
 

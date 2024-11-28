@@ -1,5 +1,4 @@
-﻿using Unity.Properties;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace PunchGear.Internal
 {

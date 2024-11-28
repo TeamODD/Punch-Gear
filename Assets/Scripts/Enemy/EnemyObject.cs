@@ -1,4 +1,5 @@
 using PunchGear.Entity;
+
 using UnityEngine;
 
 namespace PunchGear.Enemy
@@ -12,7 +13,10 @@ namespace PunchGear.Enemy
 
         public int Health
         {
-            get => _healthPoint;
+            get
+            {
+                return _healthPoint;
+            }
             set
             {
                 int previous = _healthPoint;

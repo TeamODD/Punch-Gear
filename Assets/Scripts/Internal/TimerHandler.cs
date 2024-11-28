@@ -1,5 +1,5 @@
 using UnityEngine;
-using System.Collections;
+
 using TMPro;
 
 namespace PunchGear
@@ -8,36 +8,40 @@ namespace PunchGear
     {
         public TextMeshProUGUI textMeshProText;
 
-        private int _minutes = 0;
-        private int _seconds = 0;
-        private int _milliseconds = 0;
+        [field: SerializeField]
+        public float StartTime { get; set; }
 
-        void Start()
+        private bool _enabled;
+
+        private void Awake()
         {
-            StartCoroutine(TimerCoroutine());
+            _enabled = false;
         }
 
-        private IEnumerator TimerCoroutine()
+        private void FixedUpdate()
         {
-            while (true)
+            if (!_enabled)
             {
-                yield return new WaitForSecondsRealtime(0.01f); // 0.01초 대기
-
-                _milliseconds++;
-                if (_milliseconds == 100)
-                {
-                    _milliseconds = 0;
-                    _seconds++;
-
-                    if (_seconds == 60)
-                    {
-                        _seconds = 0;
-                        _minutes++;
-                    }
-                }
-
-                textMeshProText.text = $"<Size=25>{_minutes:00}:{_seconds:00}</Size><Size=15>.{_milliseconds:00}</Size>";
+                return;
             }
+            float currentTime = Time.time;
+            float deltaTime = currentTime - StartTime;
+            int seconds = (int) Mathf.Floor(deltaTime);
+            int displayMinutes = seconds / 60;
+            int displaySeconds = seconds % 60;
+            int underSeconds = (int) ((deltaTime - seconds) * 100f);
+            textMeshProText.text =
+                $"<Size=25>{displayMinutes:00}:{displaySeconds:00}</Size><Size=15>.{underSeconds:00}</Size>";
+        }
+
+        public void Enable()
+        {
+            _enabled = true;
+        }
+
+        public void Disable()
+        {
+            _enabled = false;
         }
     }
 }

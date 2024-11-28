@@ -6,12 +6,18 @@ namespace PunchGear.Internal
     {
         public GameObject gameManager;
 
+        private OpenOption _option;
+
+        private void Awake()
+        {
+            _option = gameManager.GetComponent<OpenOption>();
+        }
+
         private void OnMouseDown()
         {
-
-            if (!gameManager.GetComponent<OpenOption>().isPaused)
+            if (!_option.isPaused)
             {
-                gameManager.GetComponent<OpenOption>().OpenEvent();
+                _option.OpenEvent();
             }
         }
     }

@@ -1,5 +1,7 @@
 using System.Collections;
+
 using PunchGear.Entity;
+
 using UnityEngine;
 
 namespace PunchGear.Enemy
@@ -17,7 +19,7 @@ namespace PunchGear.Enemy
 
         public IEnumerator GetPatternCoroutine()
         {
-            ProjectileLauncher launcher = ProjectileLauncher.Instance;
+            IProjectileLauncher launcher = ProjectileLauncher.Instance;
             yield return new WaitForSecondsRealtime(_enemyPattern.fast);
             yield return _enemyPattern.JoinCoroutines(
                 launcher.Launch(0),

@@ -1,4 +1,3 @@
-using PunchGear.Entity;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,17 +8,14 @@ namespace PunchGear.Internal
         private Slider volumeSlider;
         private AudioManager audioManager;
 
-        void Start()
+        private void Start()
         {
-            audioManager = Object.FindFirstObjectByType<AudioManager>();
-            volumeSlider = this.GetComponent<Slider>();
+            audioManager = FindFirstObjectByType<AudioManager>();
+            volumeSlider = GetComponent<Slider>();
 
             // 오디오 마네자 알아서 만드셈
             volumeSlider.value = AudioManager.Instance.EffectVolume;
-            volumeSlider.onValueChanged.AddListener(value =>
-            {
-                AudioManager.Instance.EffectVolume = value;
-            });
+            volumeSlider.onValueChanged.AddListener(value => { AudioManager.Instance.EffectVolume = value; });
         }
     }
 }

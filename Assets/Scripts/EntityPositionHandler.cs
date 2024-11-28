@@ -1,12 +1,15 @@
 using System;
 using System.Collections;
+
 using UnityEngine;
 
 namespace PunchGear
 {
+    [DisallowMultipleComponent]
+    [DefaultExecutionOrder(-50)]
     public class EntityPositionHandler : MonoBehaviour
     {
-        private static EntityPositionHandler _instance;
+        public static EntityPositionHandler Instance { get; private set; }
 
         [field: SerializeField]
         public EntityPositionProfile TopPositionProfile { get; private set; }
@@ -14,21 +17,9 @@ namespace PunchGear
         [field: SerializeField]
         public EntityPositionProfile BottomPositionProfile { get; private set; }
 
-        // [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-        // private static void Initialize()
-        // {
-        //     _instance = FindFirstObjectByType<EntityPositionHandler>();
-        //     if (!_instance)
-        //     {
-        //         throw new NullReferenceException("Cannot find any Entity position handler");
-        //     }
-        // }
-
-        public static EntityPositionHandler Instance => _instance;
-
         private void Awake()
         {
-            if (_instance)
+            if (Instance)
             {
                 throw new NullReferenceException("Entity position handler already exists");
             }
@@ -48,12 +39,12 @@ namespace PunchGear
             {
                 throw new InvalidOperationException("Bottom position profile's position must be bottom");
             }
-            _instance = this;
+            Instance = this;
         }
 
         private void OnDisable()
         {
-            _instance = null;
+            Instance = null;
         }
 
         public EntityPositionProfile this[EntityPosition position]
@@ -90,7 +81,11 @@ namespace PunchGear
             rigidbody.position = currentPosition;
         }
 
-        public IEnumerator SmoothDampPosition(Transform transform, EntityPosition targetPosition, float duration, float smoothTime)
+        public IEnumerator SmoothDampPosition(
+            Transform transform,
+            EntityPosition targetPosition,
+            float duration,
+            float smoothTime)
         {
             Vector2 targetVector = this[targetPosition].Vector;
             targetVector.x = transform.position.x;
@@ -98,18 +93,15 @@ namespace PunchGear
             Vector2 velocityVector = Vector2.zero;
             while (elapsedTime < duration)
             {
-                // SmoothDamp를 통해 부드럽게 이동
                 transform.position = Vector2.SmoothDamp(
                     transform.position,
                     targetVector,
                     ref velocityVector,
-                    smoothTime // 감속 시간
-                );
-                elapsedTime += Time.deltaTime; // 경과 시간 증가
-                yield return null; // 다음 프레임까지 대기
+                    smoothTime);
+                elapsedTime += Time.deltaTime;
+                yield return null;
             }
 
-            // 이동 완료 후 정확히 목표 위치로 설정
             SetPosition(transform, targetPosition);
         }
 
@@ -119,26 +111,8 @@ namespace PunchGear
             {
                 EntityPosition.Bottom => BottomPositionProfile,
                 EntityPosition.Top => TopPositionProfile,
-                _ => throw new InvalidOperationException("Undefined value"),
+                _ => throw new InvalidOperationException("Undefined value")
             };
         }
-    }
-
-    [Serializable]
-    public class EntityPositionProfile
-    {
-        [field: SerializeField]
-        public EntityPosition Position { get; private set; }
-
-        [field: SerializeField]
-        public float Height { get; private set; }
-
-        public Vector2 Vector => new Vector2(0, Height);
-    }
-
-    public enum EntityPosition
-    {
-        Bottom,
-        Top
     }
 }
