@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -17,13 +18,13 @@ namespace PunchGear.Scenes
 
         private string _originText;
 
-        private Dictionary<string, int> buttonMapping;
+        private Dictionary<string, int> _buttonMapping;
 
         private void Start()
         {
-            
-            _image = this.GetComponent<Image>();
+            _image = GetComponent<Image>();
         }
+
         public void OnPointerEnter(PointerEventData eventData)
         {
             AudioManager.Instance.Play(_clip);

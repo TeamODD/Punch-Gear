@@ -55,7 +55,7 @@ namespace PunchGear
                 {
                     EntityPosition.Top => TopPositionProfile,
                     EntityPosition.Bottom => BottomPositionProfile,
-                    var _ => throw new InvalidOperationException("Undefined value")
+                    _ => throw new InvalidOperationException("Undefined value")
                 };
             }
         }
@@ -111,7 +111,7 @@ namespace PunchGear
             {
                 EntityPosition.Bottom => BottomPositionProfile,
                 EntityPosition.Top => TopPositionProfile,
-                var _ => throw new InvalidOperationException("Undefined value")
+                _ => throw new InvalidOperationException("Undefined value")
             };
         }
     }

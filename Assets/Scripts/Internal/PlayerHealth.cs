@@ -1,10 +1,11 @@
-using PunchGear.Internal;
+using System;
 using System.Collections;
-using Unity.VisualScripting;
+
 using UnityEngine;
 
 namespace PunchGear.Internal
 {
+    [Obsolete]
     public class PlayerHealth : MonoBehaviour
     {
         [SerializeField]
@@ -19,6 +20,7 @@ namespace PunchGear.Internal
         private GameManager _gameManager;
 
         public float duration = 0.2f;
+
         private void Start()
         {
             _gameManager = _gameManagerObject.GetComponent<GameManager>();
@@ -37,7 +39,7 @@ namespace PunchGear.Internal
             GameObject healthObject = _childObject[_gameManager.playerHealthMax - _gameManager.playerHealth];
             _gameManager.playerHealth--;
 
-            for (int i = 0; i < 3; i++) 
+            for (int i = 0; i < 3; i++)
             {
                 yield return new WaitForSeconds(duration);
                 healthObject.SetActive(false);
@@ -46,14 +48,14 @@ namespace PunchGear.Internal
             }
 
             Destroy(healthObject);
-            switch (_gameManager.playerHealth) {
+            switch (_gameManager.playerHealth)
+            {
                 case 0: break; // 대충 게임 오버
                 case 1: HealthBarBreak(); break;
             }
-
         }
 
-        void HealthBarBreak()
+        private void HealthBarBreak()
         {
             SpriteRenderer spriteRenderer = _childObject[3].GetComponent<SpriteRenderer>();
 

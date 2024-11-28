@@ -1,6 +1,9 @@
 using UnityEngine;
+
 using System.Collections;
+
 using PunchGear.Entity;
+
 using System.Collections.Generic;
 using System;
 
@@ -10,7 +13,7 @@ namespace PunchGear.Enemy
     {
         private readonly EnemyPattern _enemyPattern;
         private readonly NobilityAnimationController _animationController;
-        private List<Func<IEnumerator>> _actions;
+        private readonly List<Func<IEnumerator>> _actions;
 
         public AttackPattern5(EnemyPattern enemyPattern, NobilityAnimationController animationController)
         {
@@ -24,25 +27,31 @@ namespace PunchGear.Enemy
                     new WaitForSecondsRealtime(_enemyPattern.fast)),
                 () =>
                 {
-                    ProjectileLauncher launcher = ProjectileLauncher.Instance;
-                    return _enemyPattern.JoinCoroutines(launcher.Launch(_enemyPattern.fast), _animationController.TransitAnimationRoutine());
+                    IProjectileLauncher launcher = ProjectileLauncher.Instance;
+                    return _enemyPattern.JoinCoroutines(
+                        launcher.Launch(_enemyPattern.fast),
+                        _animationController.TransitAnimationRoutine());
                 },
                 () =>
                 {
-                    ProjectileLauncher launcher = ProjectileLauncher.Instance;
-                    return _enemyPattern.JoinCoroutines(launcher.Launch(_enemyPattern.fast), _animationController.TransitAnimationRoutine());
+                    IProjectileLauncher launcher = ProjectileLauncher.Instance;
+                    return _enemyPattern.JoinCoroutines(
+                        launcher.Launch(_enemyPattern.fast),
+                        _animationController.TransitAnimationRoutine());
                 },
                 () =>
                 {
-                    ProjectileLauncher launcher = ProjectileLauncher.Instance;
-                    return _enemyPattern.JoinCoroutines(launcher.Launch(0), _animationController.TransitAnimationRoutine());
+                    IProjectileLauncher launcher = ProjectileLauncher.Instance;
+                    return _enemyPattern.JoinCoroutines(
+                        launcher.Launch(0),
+                        _animationController.TransitAnimationRoutine());
                 }
             };
         }
 
         public IEnumerator GetPatternCoroutine()
         {
-            ProjectileLauncher launcher = ProjectileLauncher.Instance;
+            IProjectileLauncher launcher = ProjectileLauncher.Instance;
             for (int i = 0; i < 5; i++)
             {
                 int index = UnityEngine.Random.Range(0, _actions.Count);

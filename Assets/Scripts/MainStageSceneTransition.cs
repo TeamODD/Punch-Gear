@@ -1,5 +1,6 @@
 using PunchGear.Enemy;
 using PunchGear.Entity;
+
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -12,7 +13,6 @@ namespace PunchGear
 
         private void Awake()
         {
-
             _player = FindFirstObjectByType<Player>();
             _enemyObject = FindFirstObjectByType<EnemyObject>();
         }
@@ -41,7 +41,7 @@ namespace PunchGear
         {
             if (health == 0)
             {
-                SceneManager.LoadScene("GaemClear");
+                SceneManager.LoadScene("GameClear");
             }
         }
     }
