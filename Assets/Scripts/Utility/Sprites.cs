@@ -2,7 +2,7 @@ using System.Collections;
 
 using UnityEngine;
 
-namespace PunchGear.Entity
+namespace PunchGear.Utility
 {
     public static class Sprites
     {
