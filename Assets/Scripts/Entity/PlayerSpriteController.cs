@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 namespace PunchGear.Entity
@@ -9,7 +8,7 @@ namespace PunchGear.Entity
 
         [Range(0.1f, 1f)]
         [SerializeField]
-        private float _blinkRate;
+        private float blinkRate;
 
         [field: SerializeField]
         public Player Player { get; private set; }
@@ -19,7 +18,7 @@ namespace PunchGear.Entity
             _renderer = GetComponent<SpriteRenderer>();
             if (Player == null)
             {
-                throw new NullReferenceException("Player is not attached");
+                throw new UnassignedReferenceException("Player is not attached");
             }
             Player.OnHealthChange += UpdateIndicator;
         }
@@ -35,10 +34,9 @@ namespace PunchGear.Entity
             {
                 return;
             }
-            Debug.Log("Update indicator");
             for (int i = currentHealth; i < previousHealth; i++)
             {
-                this.StartBlink(_renderer, 2, _blinkRate, true);
+                this.StartBlink(_renderer, 2, blinkRate, true);
             }
         }
     }

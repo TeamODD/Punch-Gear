@@ -1,36 +1,57 @@
 using System;
 using System.Collections;
 
+using PunchGear.Attributes;
 using PunchGear.Enemy;
 
 using UnityEngine;
+using UnityEngine.Pool;
 
 namespace PunchGear.Entity
 {
-    public class Projectile : MonoBehaviour, IProjectile, IPlaceableEntity
+    public class Projectile : MonoBehaviour, IProjectile
     {
         private static readonly int DisassembleAnimation = Animator.StringToHash("Disassemble");
-        private static readonly int Assemble1 = Animator.StringToHash("Assemble");
-
-        [SerializeField] private Rigidbody2D _spriteRigidbody;
-
-        [field: SerializeField]
-        public EntityPosition Position { get; set; }
-
-        [field: SerializeField]
-        public GameObject EnemyOrigin { get; set; }
-
-        [field: SerializeField]
-        public Player Player { get; set; }
+        private static readonly int AssembleAnimation = Animator.StringToHash("Assemble");
 
         [field: SerializeField]
         public float AssembleFreezeCooldown { get; private set; }
 
+        [field: ReadOnlyField]
+        [field: SerializeField]
+        public EntityPosition Position { get; set; }
+
+        [field: ReadOnlyField]
+        [field: SerializeField]
+        public GameObject EnemyOrigin { get; set; }
+
+        [field: ReadOnlyField]
+        [field: SerializeField]
+        public ProjectileState State { get; private set; }
+
+        [field: ReadOnlyField]
+        [field: SerializeField]
+        public bool Disassembled { get; private set; }
+
+        [field: ReadOnlyField]
+        [field: SerializeField]
+        public bool Assembled { get; private set; }
+
+        public IObjectPool<IProjectile> ProjectilePool { get; set; }
+
+        [ReadOnlyField]
+        [SerializeField]
+        private Rigidbody2D _spriteRigidbody;
+
         private Animator _animator;
         private Rigidbody2D _rigidbody;
+        private Coroutine _chaseEnemyAnimationCoroutine;
         private bool _canPlayerManipulate;
         private bool _isAssembleFrozen;
-        private Coroutine _chaseEnemyAnimationCoroutine;
+
+        public event CollisionEnterDelegate OnCollisionEnter;
+
+        public event CollisionExitDelegate OnCollisionExit;
 
         private void Awake()
         {
@@ -57,7 +78,7 @@ namespace PunchGear.Entity
 
         private void OnDestroy()
         {
-            ProjectileLauncher.Instance.OnProjectileDestroyed.Invoke(this);
+            ProjectilePool.Release(this);
         }
 
         private void OnTriggerEnter2D(Collider2D collider)
@@ -71,7 +92,6 @@ namespace PunchGear.Entity
                 {
                     return;
                 }
-                Debug.Log("Projectile entered the assembly point: " + nameof(Position));
                 _canPlayerManipulate = true;
             }
             if (target.CompareTag("Nobility"))
@@ -107,15 +127,6 @@ namespace PunchGear.Entity
             }
         }
 
-        [field: SerializeField]
-        public ProjectileState State { get; private set; }
-
-        [field: SerializeField]
-        public bool Disassembled { get; private set; }
-
-        [field: SerializeField]
-        public bool Assembled { get; private set; }
-
         public void Assemble()
         {
             if (!_canPlayerManipulate || !Disassembled || _isAssembleFrozen)
@@ -124,7 +135,8 @@ namespace PunchGear.Entity
             }
             Disassembled = false;
             Assembled = true;
-            _animator.SetTrigger(Assemble1);
+            State = ProjectileState.Assembled;
+            _animator.SetTrigger(AssembleAnimation);
             _rigidbody.linearVelocity = Vector2.zero;
             _rigidbody.bodyType = RigidbodyType2D.Dynamic;
             _rigidbody.gravityScale = 0;
@@ -138,6 +150,7 @@ namespace PunchGear.Entity
                 return;
             }
             Disassembled = true;
+            State = ProjectileState.Disassembled;
             _animator.SetTrigger(DisassembleAnimation);
             _rigidbody.linearVelocity = Vector2.zero;
             _rigidbody.bodyType = RigidbodyType2D.Dynamic;
@@ -181,9 +194,5 @@ namespace PunchGear.Entity
                 yield return null;
             }
         }
-
-        public event CollisionEnterDelegate OnCollisionEnter;
-
-        public event CollisionExitDelegate OnCollisionExit;
     }
 }

@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+
 using PunchGear.Entity;
+
 using UnityEngine;
 
 namespace PunchGear
 {
-    public class AssemblyPoint : MonoBehaviour
+    public class AssemblyPoint : MonoBehaviour, IColliderHolder
     {
         [field: SerializeField]
         public EntityPosition Position { get; private set; }
@@ -13,14 +15,27 @@ namespace PunchGear
         public bool EntersProjectile
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => _targets.Count != 0;
+            get
+            {
+                return _targets.Count != 0;
+            }
         }
 
-        private readonly HashSet<Projectile> _targets = new HashSet<Projectile>();
+        public event CollisionEnterDelegate OnCollisionEnter;
 
-        public IEnumerable<Projectile> ProjectileTargets => _targets;
+        public event CollisionExitDelegate OnCollisionExit;
 
-        private void Start()
+        private readonly HashSet<IProjectile> _targets = new HashSet<IProjectile>();
+
+        public IEnumerable<IProjectile> ProjectileTargets
+        {
+            get
+            {
+                return _targets;
+            }
+        }
+
+        private void Awake()
         {
             EntityPositionHandler.Instance.SetPosition(this, Position);
         }
@@ -35,9 +50,10 @@ namespace PunchGear
             GameObject target = collider.gameObject;
             if (target.CompareTag("Projectile"))
             {
-                Projectile projectile = target.GetComponent<Projectile>();
+                IProjectile projectile = target.GetComponent<IProjectile>();
                 _targets.Add(projectile);
             }
+            OnCollisionEnter?.Invoke(collider);
         }
 
         private void OnTriggerExit2D(Collider2D collider)
@@ -45,9 +61,10 @@ namespace PunchGear
             GameObject target = collider.gameObject;
             if (target.CompareTag("Projectile"))
             {
-                Projectile projectile = target.GetComponent<Projectile>();
+                IProjectile projectile = target.GetComponent<IProjectile>();
                 _targets.Remove(projectile);
             }
+            OnCollisionExit?.Invoke(collider);
         }
     }
 }

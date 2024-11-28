@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+
 using UnityEngine;
 
 namespace PunchGear.Entity
@@ -14,7 +15,7 @@ namespace PunchGear.Entity
         private static AudioClip AssembleMissAudioClip;
 
         private Player _player;
-        private Dictionary<Projectile, IMouseInputAction> _mouseInputActionLookup;
+        private Dictionary<IProjectile, IMouseInputAction> _mouseInputActionLookup;
 
         private Animator _animator;
 
@@ -26,7 +27,6 @@ namespace PunchGear.Entity
         private bool _disabled;
 
         private AssemblyPoint[] _assemblyPoints;
-
 
 #if UNITY_EDITOR
         private GUIStyle _style;
@@ -54,12 +54,14 @@ namespace PunchGear.Entity
             _player = GetComponent<Player>();
             _animator = GetComponent<Animator>();
             _assemblyPoints = FindObjectsByType<AssemblyPoint>(FindObjectsSortMode.None);
-            _mouseInputActionLookup = new Dictionary<Projectile, IMouseInputAction>();
+            _mouseInputActionLookup = new Dictionary<IProjectile, IMouseInputAction>();
             _isAssembleFrozen = false;
             _isDisassembleFrozen = false;
 #if UNITY_EDITOR
-            _style = new GUIStyle();
-            _style.fontSize = (int)(40.0f * (Screen.width / 1920f));
+            _style = new GUIStyle
+            {
+                fontSize = (int) (40.0f * (Screen.width / 1920f))
+            };
 #endif
             GloballyPlayerInputHandler.Instance.AddAction(new AnimationTransitionAction(this, _player));
 
@@ -71,23 +73,25 @@ namespace PunchGear.Entity
 
         private void Start()
         {
-            ProjectileLauncher launcher = ProjectileLauncher.Instance;
-            launcher.OnProjectileCreated.AddListener(projectile =>
-            {
-                IMouseInputAction action = new MouseInputAction(projectile, _player, this);
-                _mouseInputActionLookup[projectile] = action;
-                GloballyPlayerInputHandler.Instance.AddAction(action);
-            });
-            launcher.OnProjectileDestroyed.AddListener(projectile =>
-            {
-                if (_disabled)
+            IProjectileLauncher launcher = ProjectileLauncher.Instance;
+            launcher.OnProjectileCreated.AddListener(
+                projectile =>
                 {
-                    return;
-                }
-                IMouseInputAction action = _mouseInputActionLookup[projectile];
-                GloballyPlayerInputHandler.Instance.RemoveAction(action);
-                _mouseInputActionLookup.Remove(projectile);
-            });
+                    IMouseInputAction action = new MouseInputAction(projectile, _player, this);
+                    _mouseInputActionLookup[projectile] = action;
+                    GloballyPlayerInputHandler.Instance.AddAction(action);
+                });
+            launcher.OnProjectileDestroyed.AddListener(
+                projectile =>
+                {
+                    if (_disabled)
+                    {
+                        return;
+                    }
+                    IMouseInputAction action = _mouseInputActionLookup[projectile];
+                    GloballyPlayerInputHandler.Instance.RemoveAction(action);
+                    _mouseInputActionLookup.Remove(projectile);
+                });
         }
 
 #if UNITY_EDITOR
@@ -144,7 +148,10 @@ namespace PunchGear.Entity
             private readonly PlayerAssembleController _assembleController;
             private readonly Player _player;
 
-            public AudioEffectAction(AssemblyPoint assemblyPoint, PlayerAssembleController assembleController, Player player)
+            public AudioEffectAction(
+                AssemblyPoint assemblyPoint,
+                PlayerAssembleController assembleController,
+                Player player)
             {
                 _assemblyPoint = assemblyPoint;
                 _player = player;
@@ -163,7 +170,9 @@ namespace PunchGear.Entity
                     {
                         return;
                     }
-                    if (_assemblyPoint.EntersProjectile && _assemblyPoint.ProjectileTargets.Any(projectile => !projectile.Disassembled))
+                    if (_assemblyPoint.EntersProjectile
+                     && _assemblyPoint.ProjectileTargets.Any(
+                            projectile => projectile.State != ProjectileState.Disassembled))
                     {
                         AudioManager.Instance.Play(DisassembleAudioClip);
                     }
@@ -178,8 +187,9 @@ namespace PunchGear.Entity
                     {
                         return;
                     }
-                    if (_assemblyPoint.EntersProjectile &&
-                        _assemblyPoint.ProjectileTargets.Any(projectile => projectile.Disassembled && !projectile.Assembled))
+                    if (_assemblyPoint.EntersProjectile
+                     && _assemblyPoint.ProjectileTargets.Any(
+                            projectile => projectile.Disassembled && !projectile.Assembled))
                     {
                         AudioManager.Instance.Play(AssembleAudioClip);
                     }
@@ -229,11 +239,11 @@ namespace PunchGear.Entity
 
         private class MouseInputAction : IMouseInputAction
         {
-            private readonly Projectile _projectile;
+            private readonly IProjectile _projectile;
             private readonly Player _player;
             private readonly PlayerAssembleController _assembleController;
 
-            public MouseInputAction(Projectile projectile, Player player, PlayerAssembleController assembleController)
+            public MouseInputAction(IProjectile projectile, Player player, PlayerAssembleController assembleController)
             {
                 _projectile = projectile;
                 _player = player;

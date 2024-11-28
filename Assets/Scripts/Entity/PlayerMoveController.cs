@@ -1,6 +1,6 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
 
 namespace PunchGear.Entity
@@ -13,6 +13,10 @@ namespace PunchGear.Entity
         private void Awake()
         {
             _player = GetComponent<Player>();
+        }
+
+        private void OnEnable()
+        {
             _globallyPlayerInputHandler = GloballyPlayerInputHandler.Instance;
             _globallyPlayerInputHandler.AddAction(new KeyboardInputAction(this, _player));
             Debug.Log("Keyboard action attached");
@@ -51,7 +55,8 @@ namespace PunchGear.Entity
                 {
                     if (_smoothDampPositionCoroutine == null && lastPosition == EntityPosition.Top)
                     {
-                        _smoothDampPositionCoroutine = _controller.StartCoroutine(StartAnimation(EntityPosition.Bottom));
+                        _smoothDampPositionCoroutine =
+                            _controller.StartCoroutine(StartAnimation(EntityPosition.Bottom));
                         _player.Position = EntityPosition.Bottom;
                     }
                 }

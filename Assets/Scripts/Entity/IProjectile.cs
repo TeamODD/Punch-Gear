@@ -1,6 +1,6 @@
 namespace PunchGear.Entity
 {
-    public interface IProjectile : IColliderHolder
+    public interface IProjectile : IPlaceableEntity, IColliderHolder
     {
         public ProjectileState State { get; }
 

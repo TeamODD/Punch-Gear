@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
+
 using PunchGear.Entity;
+
 using UnityEngine;
 
 namespace PunchGear
@@ -9,8 +11,10 @@ namespace PunchGear
     {
         [SerializeField]
         private SpriteRenderer[] _healthIndicatorItems;
+
         [SerializeField]
         private SpriteRenderer _indicatorHolderSprite;
+
         [SerializeField]
         private PlayerHealthIndicatorHolderSpriteProfile _profile;
 

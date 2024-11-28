@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+
 using UnityEngine;
 
 namespace PunchGear.Entity
@@ -8,8 +9,6 @@ namespace PunchGear.Entity
     {
         [SerializeField]
         private Transform _targetIndicator;
-
-        // Start is called once before the first execution of Update after the MonoBehaviour is created
 
         private Vector3 _originalScale;
 
@@ -39,10 +38,9 @@ namespace PunchGear.Entity
                     _targetIndicator.localScale,
                     targetScale,
                     ref scaleVelocityVector,
-                    0.2f // 감속 시간
-                );
-                elapsedTime += Time.deltaTime; // 경과 시간 증가
-                yield return null; // 다음 프레임까지 대기
+                    0.2f);
+                elapsedTime += Time.deltaTime;
+                yield return null;
             }
             _targetIndicator.localScale = _originalScale;
         }

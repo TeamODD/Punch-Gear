@@ -1,15 +1,17 @@
 using System;
 using System.Collections.Generic;
+
 using UnityEngine;
 
 namespace PunchGear.Entity
 {
+    [Obsolete]
     public class TestInputHandler : MonoBehaviour
     {
         [SerializeField]
         private SpriteRenderer _renderer;
-        private Rigidbody2D _rigidBody;
 
+        private Rigidbody2D _rigidBody;
 
         private void Awake()
         {

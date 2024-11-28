@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
+
 using PunchGear.Enemy;
-using Unity.VisualScripting;
+
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace PunchGear.Entity.UI
 {
@@ -10,11 +12,14 @@ namespace PunchGear.Entity.UI
     {
         private EnemyObject _enemyObject;
 
+        [FormerlySerializedAs("_targetIndicator")]
         [SerializeField]
-        private Transform _targetIndicator;
+        private Transform targetIndicator;
+
+        [FormerlySerializedAs("_indicatorShrinkRate")]
         [Range(0.01f, 1f)]
         [SerializeField]
-        private float _indicatorShrinkRate;
+        private float indicatorShrinkRate;
 
         private Vector3 _originalScale;
         private int _originalNobilityHealth;
@@ -26,11 +31,11 @@ namespace PunchGear.Entity.UI
             {
                 throw new NullReferenceException("Cannot find enemy object");
             }
-            if (_targetIndicator == null)
+            if (targetIndicator == null)
             {
                 throw new NullReferenceException("Indicator transform is not attached");
             }
-            _originalScale = _targetIndicator.localScale;
+            _originalScale = targetIndicator.localScale;
         }
 
         private void Start()
@@ -55,13 +60,13 @@ namespace PunchGear.Entity.UI
             {
                 return;
             }
-            StartIndicateShrink(currentHealth, _indicatorShrinkRate);
+            StartIndicateShrink(currentHealth, indicatorShrinkRate);
         }
 
-        public Coroutine StartIndicateShrink(int health, float cooldown)
+        public void StartIndicateShrink(int health, float cooldown)
         {
-            float indicatorLength = health / (float)_originalNobilityHealth;
-            return StartCoroutine(StartShrinkIndicator(indicatorLength, cooldown));
+            float indicatorLength = health / (float) _originalNobilityHealth;
+            StartCoroutine(StartShrinkIndicator(indicatorLength, cooldown));
         }
 
         private IEnumerator StartShrinkIndicator(float indicatorLength, float cooldown)
@@ -70,19 +75,18 @@ namespace PunchGear.Entity.UI
             targetScale.x *= indicatorLength;
             Vector2 scaleVelocityVector = Vector2.zero;
             float elapsedTime = 0f;
-            float smoothTime = _indicatorShrinkRate / 2;
+            float smoothTime = indicatorShrinkRate / 2;
             while (elapsedTime < cooldown)
             {
-                _targetIndicator.localScale = Vector2.SmoothDamp(
-                    _targetIndicator.localScale,
+                targetIndicator.localScale = Vector2.SmoothDamp(
+                    targetIndicator.localScale,
                     targetScale,
                     ref scaleVelocityVector,
-                    smoothTime // 감속 시간
-                );
-                elapsedTime += Time.deltaTime; // 경과 시간 증가
-                yield return null; // 다음 프레임까지 대기
+                    smoothTime);
+                elapsedTime += Time.deltaTime;
+                yield return null;
             }
-            _targetIndicator.localScale = targetScale;
+            targetIndicator.localScale = targetScale;
         }
     }
 }

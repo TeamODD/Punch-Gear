@@ -1,4 +1,5 @@
 using System.Collections;
+
 using UnityEngine;
 
 namespace PunchGear.Entity
@@ -23,7 +24,10 @@ namespace PunchGear.Entity
 
         public int Health
         {
-            get => _healthPoint;
+            get
+            {
+                return _healthPoint;
+            }
             set
             {
                 int previous = _healthPoint;
@@ -37,6 +41,7 @@ namespace PunchGear.Entity
 
         [field: SerializeField]
         public PlayerAssemblyCooldownIndicator DisassemblyCooldownIndicator { get; private set; }
+
         [field: SerializeField]
         public PlayerAssemblyCooldownIndicator AssemblyCooldownIndicator { get; private set; }
 
