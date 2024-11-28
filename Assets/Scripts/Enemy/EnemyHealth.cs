@@ -1,26 +1,30 @@
-﻿using UnityEngine;
+﻿using System;
+
+using UnityEngine;
+
 using System.Collections;
-using System.Collections.Generic;
-using TMPro;
+
+using PunchGear.Internal;
 
 namespace PunchGear.Enemy
 {
+    [Obsolete]
     public class EnemyHealth : MonoBehaviour
     {
-        public Internal.GameManager totalManager;
-        private float HealthBarLength; // 최대 채력 길이
+        public GameManager totalManager;
+        private float HealthBarLength;
 
-        private float scaleControl; // 이건 지금부터 스케일 조정기여
-        private float positionControl; // 너는 지금부터 위치 조정기여
-        private Vector3 positionVelocity = Vector3.zero; // 위치에 대한 속도 추적 변수
-        private Vector3 scaleVelocity = Vector3.zero;    // 스케일에 대한 속도 추적 변수
+        private float scaleControl;
+        private float positionControl;
+        private Vector3 positionVelocity = Vector3.zero;
+        private Vector3 scaleVelocity = Vector3.zero;
         public float duration = 0.6f;
 
         private void Start()
         {
-            HealthBarLength = this.transform.localScale.x;
+            HealthBarLength = transform.localScale.x;
 
-            scaleControl = (float)HealthBarLength / totalManager.enemyHealthMax;
+            scaleControl = HealthBarLength / totalManager.enemyHealthMax;
             positionControl = scaleControl * 6.5f;
 
             StartCoroutine(HealthHandler());
@@ -32,26 +36,22 @@ namespace PunchGear.Enemy
             Vector3 targetPosition = transform.position - new Vector3(positionControl, 0, 0);
 
             float elapsedTime = 0f;
-            while(elapsedTime < duration)
+            while (elapsedTime < duration)
             {
-                float t = elapsedTime / duration;
-                // SmoothDamp를 통해 부드럽게 이동
                 transform.position = Vector3.SmoothDamp(
-                    this.transform.position,
+                    transform.position,
                     targetPosition,
                     ref positionVelocity,
-                    0.2f // 감속 시간
-                );
+                    0.2f);
 
                 transform.localScale = Vector3.SmoothDamp(
-                    this.transform.localScale,
+                    transform.localScale,
                     targetScale,
                     ref scaleVelocity,
-                    0.2f // 감속 시간
-                );
+                    0.2f);
 
-                elapsedTime += Time.deltaTime; // 경과 시간 증가
-                yield return null; // 다음 프레임까지 대기
+                elapsedTime += Time.deltaTime;
+                yield return null;
             }
 
             transform.localScale = targetScale;
