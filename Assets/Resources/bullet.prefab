@@ -208,8 +208,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4cc113add11121640b4ebceb9739bdc4, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   power: 300
 --- !u!114 &-1411184715368209294
 MonoBehaviour:
@@ -221,16 +221,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3ccab060a79cd6342a5ad964ec88779e, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
-  _spriteRigidbody: {fileID: 1112626657896804473}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <AssembleFreezeCooldown>k__BackingField: 0.2
   <Position>k__BackingField: 0
   <EnemyOrigin>k__BackingField: {fileID: 0}
-  <Player>k__BackingField: {fileID: 0}
-  <AssembleFreezeCooldown>k__BackingField: 0.2
   <State>k__BackingField: 0
   <Disassembled>k__BackingField: 0
   <Assembled>k__BackingField: 0
+  _spriteRigidbody: {fileID: 1112626657896804473}
 --- !u!95 &6932539657882292161
 Animator:
   serializedVersion: 7
@@ -248,7 +247,7 @@ Animator:
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 0
-  m_WarningMessage:
+  m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
