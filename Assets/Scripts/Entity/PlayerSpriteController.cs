@@ -1,3 +1,5 @@
+using PunchGear.Utility;
+
 using UnityEngine;
 
 namespace PunchGear.Entity
