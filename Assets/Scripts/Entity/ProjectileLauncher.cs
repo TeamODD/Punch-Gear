@@ -9,26 +9,21 @@ namespace PunchGear.Entity
 {
     public class ProjectileLauncher : MonoBehaviour, IProjectileLauncher
     {
-        public static ProjectileLauncher Instance { get; private set; }
-
         [field: SerializeField]
         private GameObject _bulletLauncherOrigin;
 
         [field: SerializeField]
         public GameObject BulletPrefab { get; private set; }
 
-        [field: SerializeField]
-        public UnityEvent<IProjectile> OnProjectileCreated { get; private set; }
+        private IPlaceableEntity _placeableEntity;
+        private Player _player;
+        private IObjectPool<IProjectile> _projectilePool;
 
-        [field: SerializeField]
-        public UnityEvent<IProjectile> OnProjectileDestroyed { get; private set; }
+        public static ProjectileLauncher Instance { get; private set; }
 
         public GameObject BulletLauncherOrigin
         {
-            get
-            {
-                return _bulletLauncherOrigin;
-            }
+            get => _bulletLauncherOrigin;
             set
             {
                 _bulletLauncherOrigin = value;
@@ -39,10 +34,6 @@ namespace PunchGear.Entity
                 }
             }
         }
-
-        private IPlaceableEntity _placeableEntity;
-        private Player _player;
-        private IObjectPool<IProjectile> _projectilePool;
 
         private void Awake()
         {
@@ -75,6 +66,12 @@ namespace PunchGear.Entity
             Debug.Log("Player detected");
         }
 
+        [field: SerializeField]
+        public UnityEvent<IProjectile> OnProjectileCreated { get; private set; }
+
+        [field: SerializeField]
+        public UnityEvent<IProjectile> OnProjectileDestroyed { get; private set; }
+
         public IEnumerator Launch(float launcherCooldown)
         {
             if (BulletLauncherOrigin == null)
@@ -103,6 +100,8 @@ namespace PunchGear.Entity
             Projectile projectileImpl = (Projectile) projectile;
             projectileImpl.Position = _placeableEntity.Position;
             projectileImpl.EnemyOrigin = BulletLauncherOrigin;
+            projectileImpl.transform.position = BulletLauncherOrigin.transform.position;
+            EntityPositionHandler.Instance.SetPosition(projectileImpl, _placeableEntity.Position);
             projectileImpl.gameObject.SetActive(true);
             OnProjectileCreated.Invoke(projectileImpl);
         }
