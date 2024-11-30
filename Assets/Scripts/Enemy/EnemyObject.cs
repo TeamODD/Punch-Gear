@@ -1,9 +1,12 @@
+using System;
+
 using PunchGear.Entity;
 
 using UnityEngine;
 
 namespace PunchGear.Enemy
 {
+    [Obsolete]
     public class EnemyObject : MonoBehaviour, IHealthHolder
     {
         [SerializeField]
@@ -13,10 +16,7 @@ namespace PunchGear.Enemy
 
         public int Health
         {
-            get
-            {
-                return _healthPoint;
-            }
+            get => _healthPoint;
             set
             {
                 int previous = _healthPoint;

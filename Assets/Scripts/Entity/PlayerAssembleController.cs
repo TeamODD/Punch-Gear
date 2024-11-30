@@ -9,45 +9,32 @@ namespace PunchGear.Entity
 {
     public class PlayerAssembleController : MonoBehaviour
     {
-        private static AudioClip DisassembleAudioClip;
-        private static AudioClip DisassembleMissAudioClip;
-        private static AudioClip AssembleAudioClip;
-        private static AudioClip AssembleMissAudioClip;
+        private static readonly int IdleAnimation = Animator.StringToHash("Idle");
+        private static readonly int DisassembleAnimation = Animator.StringToHash("Disassemble");
+        private static readonly int AssembleAnimation = Animator.StringToHash("Assemble");
 
-        private Player _player;
-        private Dictionary<IProjectile, IMouseInputAction> _mouseInputActionLookup;
-
-        private Animator _animator;
+        private static AudioClip _disassembleAudioClip;
+        private static AudioClip _disassembleMissAudioClip;
+        private static AudioClip _assembleAudioClip;
+        private static AudioClip _assembleMissAudioClip;
 
         [field: SerializeField]
         public float AssembleCooldown { get; private set; }
 
-        private bool _isAssembleFrozen;
-        private bool _isDisassembleFrozen;
-        private bool _disabled;
+        private Animator _animator;
 
         private AssemblyPoint[] _assemblyPoints;
+        private bool _disabled;
+
+        private bool _isAssembleFrozen;
+        private bool _isDisassembleFrozen;
+        private Dictionary<IProjectile, IMouseInputAction> _mouseInputActionLookup;
+
+        private Player _player;
 
 #if UNITY_EDITOR
         private GUIStyle _style;
 #endif
-
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-        private static void LoadAudioClips()
-        {
-            DisassembleAudioClip = Resources.Load<AudioClip>("Sound/분해");
-            AssembleAudioClip = Resources.Load<AudioClip>("Sound/조립");
-            DisassembleMissAudioClip = Resources.Load<AudioClip>("Sound/분해 실수");
-            AssembleMissAudioClip = Resources.Load<AudioClip>("Sound/조립 실수");
-            if (DisassembleAudioClip == null)
-            {
-                throw new NullReferenceException("Cannot find Audio clip in the path");
-            }
-            if (AssembleAudioClip == null)
-            {
-                throw new NullReferenceException("Cannot find Audio clip in the path");
-            }
-        }
 
         private void Awake()
         {
@@ -88,24 +75,44 @@ namespace PunchGear.Entity
                     {
                         return;
                     }
-                    IMouseInputAction action = _mouseInputActionLookup[projectile];
+                    if (!_mouseInputActionLookup.TryGetValue(projectile, out IMouseInputAction action))
+                    {
+                        return;
+                    }
                     GloballyPlayerInputHandler.Instance.RemoveAction(action);
                     _mouseInputActionLookup.Remove(projectile);
                 });
+        }
+
+        private void OnDisable()
+        {
+            StopAllCoroutines();
+            _disabled = true;
         }
 
 #if UNITY_EDITOR
         private void OnGUI()
         {
             GUI.Label(new Rect(50, 50, 200, 100), $"isAssembleFrozen: {_isAssembleFrozen}", _style);
-            GUI.Label(new Rect(50, 150, 200, 100), $"isDisassembleFrozen: {_isDisassembleFrozen}", _style);
+            GUI.Label(new Rect(50, 100, 200, 100), $"isDisassembleFrozen: {_isDisassembleFrozen}", _style);
         }
 #endif
 
-        private void OnDisable()
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+        private static void LoadAudioClips()
         {
-            StopAllCoroutines();
-            _disabled = true;
+            _disassembleAudioClip = Resources.Load<AudioClip>("Sound/분해");
+            _assembleAudioClip = Resources.Load<AudioClip>("Sound/조립");
+            _disassembleMissAudioClip = Resources.Load<AudioClip>("Sound/분해 실수");
+            _assembleMissAudioClip = Resources.Load<AudioClip>("Sound/조립 실수");
+            if (_disassembleAudioClip == null)
+            {
+                throw new NullReferenceException("Cannot find Audio clip in the path");
+            }
+            if (_assembleAudioClip == null)
+            {
+                throw new NullReferenceException("Cannot find Audio clip in the path");
+            }
         }
 
         private void FreezeMouse(MouseAssembleAction assembleAction)
@@ -133,7 +140,7 @@ namespace PunchGear.Entity
             {
                 _isDisassembleFrozen = false;
             }
-            _animator.SetTrigger("Idle");
+            _animator.SetTrigger(IdleAnimation);
         }
 
         private enum MouseAssembleAction
@@ -144,8 +151,8 @@ namespace PunchGear.Entity
 
         private class AudioEffectAction : IMouseInputAction
         {
-            private readonly AssemblyPoint _assemblyPoint;
             private readonly PlayerAssembleController _assembleController;
+            private readonly AssemblyPoint _assemblyPoint;
             private readonly Player _player;
 
             public AudioEffectAction(
@@ -174,11 +181,11 @@ namespace PunchGear.Entity
                      && _assemblyPoint.ProjectileTargets.Any(
                             projectile => projectile.State != ProjectileState.Disassembled))
                     {
-                        AudioManager.Instance.Play(DisassembleAudioClip);
+                        AudioManager.Instance.Play(_disassembleAudioClip);
                     }
                     else
                     {
-                        AudioManager.Instance.Play(DisassembleMissAudioClip);
+                        AudioManager.Instance.Play(_disassembleMissAudioClip);
                     }
                 }
                 else if (inputs == MouseInputs.Right)
@@ -191,11 +198,11 @@ namespace PunchGear.Entity
                      && _assemblyPoint.ProjectileTargets.Any(
                             projectile => projectile.Disassembled && !projectile.Assembled))
                     {
-                        AudioManager.Instance.Play(AssembleAudioClip);
+                        AudioManager.Instance.Play(_assembleAudioClip);
                     }
                     else
                     {
-                        AudioManager.Instance.Play(AssembleMissAudioClip);
+                        AudioManager.Instance.Play(_assembleMissAudioClip);
                     }
                 }
             }
@@ -220,7 +227,7 @@ namespace PunchGear.Entity
                     {
                         return;
                     }
-                    _assembleController._animator.SetTrigger("Disassemble");
+                    _assembleController._animator.SetTrigger(DisassembleAnimation);
                     _assembleController.FreezeMouse(MouseAssembleAction.Disassemble);
                     _player.DisassemblyCooldownIndicator.StartIndicateCooldown(_assembleController.AssembleCooldown);
                 }
@@ -230,7 +237,7 @@ namespace PunchGear.Entity
                     {
                         return;
                     }
-                    _assembleController._animator.SetTrigger("Assemble");
+                    _assembleController._animator.SetTrigger(AssembleAnimation);
                     _assembleController.FreezeMouse(MouseAssembleAction.Assemble);
                     _player.AssemblyCooldownIndicator.StartIndicateCooldown(_assembleController.AssembleCooldown);
                 }
@@ -239,9 +246,9 @@ namespace PunchGear.Entity
 
         private class MouseInputAction : IMouseInputAction
         {
-            private readonly IProjectile _projectile;
-            private readonly Player _player;
             private readonly PlayerAssembleController _assembleController;
+            private readonly Player _player;
+            private readonly IProjectile _projectile;
 
             public MouseInputAction(IProjectile projectile, Player player, PlayerAssembleController assembleController)
             {

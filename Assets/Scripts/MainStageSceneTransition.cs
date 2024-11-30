@@ -1,4 +1,3 @@
-using PunchGear.Enemy;
 using PunchGear.Entity;
 
 using UnityEngine;
@@ -8,25 +7,25 @@ namespace PunchGear
 {
     public class MainStageSceneTransition : MonoBehaviour
     {
+        private Nobility _nobility;
         private Player _player;
-        private EnemyObject _enemyObject;
 
         private void Awake()
         {
             _player = FindFirstObjectByType<Player>();
-            _enemyObject = FindFirstObjectByType<EnemyObject>();
+            _nobility = FindFirstObjectByType<Nobility>();
         }
 
         private void Start()
         {
             _player.OnHealthChange += HandlePlayerHealth;
-            _enemyObject.OnHealthChange += HandleEnemyHealth;
+            _nobility.OnHealthChange += HandleEnemyHealth;
         }
 
         private void OnDisable()
         {
             _player.OnHealthChange -= HandlePlayerHealth;
-            _enemyObject.OnHealthChange -= HandleEnemyHealth;
+            _nobility.OnHealthChange -= HandleEnemyHealth;
         }
 
         private void HandlePlayerHealth(int _, int health)

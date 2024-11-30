@@ -1,84 +1,38 @@
-using System;
 using System.Collections;
 
 using PunchGear.Attributes;
-using PunchGear.Enemy;
 
 using UnityEngine;
 using UnityEngine.Pool;
 
 namespace PunchGear.Entity
 {
-    public class Projectile : MonoBehaviour, IProjectile
+    [RequireComponent(typeof(ProjectilePhysics))]
+    public class Projectile : MonoBehaviour, IProjectile, IPoolingObject
     {
         private static readonly int DisassembleAnimation = Animator.StringToHash("Disassemble");
         private static readonly int AssembleAnimation = Animator.StringToHash("Assemble");
+        private static readonly int IdleAnimation = Animator.StringToHash("Idle");
 
         [field: SerializeField]
         public float AssembleFreezeCooldown { get; private set; }
 
         [field: ReadOnlyField]
         [field: SerializeField]
-        public EntityPosition Position { get; set; }
-
-        [field: ReadOnlyField]
-        [field: SerializeField]
         public GameObject EnemyOrigin { get; set; }
 
-        [field: ReadOnlyField]
-        [field: SerializeField]
-        public ProjectileState State { get; private set; }
-
-        [field: ReadOnlyField]
-        [field: SerializeField]
-        public bool Disassembled { get; private set; }
-
-        [field: ReadOnlyField]
-        [field: SerializeField]
-        public bool Assembled { get; private set; }
+        private Animator _animator;
+        private bool _canPlayerManipulate;
+        private Coroutine _chaseEnemyAnimationCoroutine;
+        private bool _isAssembleFrozen;
+        private Rigidbody2D _rigidbody;
 
         public IObjectPool<IProjectile> ProjectilePool { get; set; }
 
-        [ReadOnlyField]
-        [SerializeField]
-        private Rigidbody2D _spriteRigidbody;
-
-        private Animator _animator;
-        private Rigidbody2D _rigidbody;
-        private Coroutine _chaseEnemyAnimationCoroutine;
-        private bool _canPlayerManipulate;
-        private bool _isAssembleFrozen;
-
-        public event CollisionEnterDelegate OnCollisionEnter;
-
-        public event CollisionExitDelegate OnCollisionExit;
-
         private void Awake()
         {
-            if (_spriteRigidbody == null)
-            {
-                throw new NullReferenceException("Rigidbody of sprite is not attached");
-            }
             _rigidbody = GetComponent<Rigidbody2D>();
             _animator = GetComponent<Animator>();
-            _canPlayerManipulate = false;
-            State = ProjectileState.Launched;
-            Disassembled = false;
-            _isAssembleFrozen = false;
-            Assembled = false;
-        }
-
-        private void Start()
-        {
-            _canPlayerManipulate = false;
-            Disassembled = false;
-            _isAssembleFrozen = false;
-            Assembled = false;
-        }
-
-        private void OnDestroy()
-        {
-            ProjectilePool.Release(this);
         }
 
         private void OnTriggerEnter2D(Collider2D collider)
@@ -101,9 +55,9 @@ namespace PunchGear.Entity
                     return;
                 }
                 StopCoroutine(_chaseEnemyAnimationCoroutine);
-                Destroy(gameObject);
-                EnemyObject enemyObject = EnemyOrigin.GetComponent<EnemyObject>();
-                enemyObject.Health -= 1;
+                ProjectilePool.Release(this);
+                Nobility nobility = EnemyOrigin.GetComponent<Nobility>();
+                nobility.Health -= 1;
             }
             if (target.CompareTag("Player"))
             {
@@ -113,7 +67,7 @@ namespace PunchGear.Entity
                 }
                 Player player = target.GetComponentInParent<Player>();
                 player.Health -= 1;
-                Destroy(gameObject);
+                ProjectilePool.Release(this);
             }
         }
 
@@ -126,6 +80,50 @@ namespace PunchGear.Entity
                 _canPlayerManipulate = false;
             }
         }
+
+        public void OnEnable()
+        {
+            _canPlayerManipulate = false;
+            _isAssembleFrozen = false;
+            State = ProjectileState.Launched;
+            Disassembled = false;
+            Assembled = false;
+
+            _rigidbody.linearVelocity = Vector2.zero;
+            _rigidbody.bodyType = RigidbodyType2D.Dynamic;
+            _rigidbody.gravityScale = 0;
+            _animator.SetTrigger(IdleAnimation);
+        }
+
+        public void OnDisable()
+        {
+            if (_chaseEnemyAnimationCoroutine == null)
+            {
+                return;
+            }
+            StopCoroutine(_chaseEnemyAnimationCoroutine);
+            _chaseEnemyAnimationCoroutine = null;
+        }
+
+        [field: ReadOnlyField]
+        [field: SerializeField]
+        public EntityPosition Position { get; set; }
+
+        [field: ReadOnlyField]
+        [field: SerializeField]
+        public ProjectileState State { get; private set; }
+
+        [field: ReadOnlyField]
+        [field: SerializeField]
+        public bool Disassembled { get; private set; }
+
+        [field: ReadOnlyField]
+        [field: SerializeField]
+        public bool Assembled { get; private set; }
+
+        public event CollisionEnterDelegate OnCollisionEnter;
+
+        public event CollisionExitDelegate OnCollisionExit;
 
         public void Assemble()
         {
