@@ -6,11 +6,14 @@ namespace PunchGear.Entity
 {
     public class NobilityAnimationController : MonoBehaviour
     {
-        [SerializeField] private NobilityAnimationSpriteProfile _profile;
+        [SerializeField]
+        private NobilityAnimationSpriteProfile _profile;
 
-        [SerializeField] private SpriteRenderer _renderer;
+        [SerializeField]
+        private SpriteRenderer _renderer;
 
-        [SerializeField] private float _animationDuration;
+        [SerializeField]
+        private float _animationDuration;
 
         private void Awake()
         {
