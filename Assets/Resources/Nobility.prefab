@@ -76,7 +76,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -3
-  m_Sprite: {fileID: 5720042066947213765, guid: 7f9f2c9f94ef04f3fa2b39871cae1ba5, type: 3}
+  m_Sprite: {fileID: 5720042066947213765, guid: 7f9f2c9f94ef04f3fa2b39871cae1ba5,
+    type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -168,6 +169,7 @@ GameObject:
   - component: {fileID: 7054504799399088980}
   - component: {fileID: 8301265952822378195}
   - component: {fileID: 2603671181179407559}
+  - component: {fileID: -6712830331436611492}
   m_Layer: 0
   m_Name: Nobility
   m_TagString: Nobility
@@ -210,7 +212,8 @@ MonoBehaviour:
   duration: 1
   term: 1.5
   smoothTime: 0.2
-  attackPatternProfile: {fileID: 11400000, guid: 0c08eb22fd7d64af8932c1499a65ce91, type: 2}
+  attackPatternProfile: {fileID: 11400000, guid: 0c08eb22fd7d64af8932c1499a65ce91,
+    type: 2}
   <Position>k__BackingField: 0
 --- !u!114 &8301265952822378195
 MonoBehaviour:
@@ -238,7 +241,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _profile:
-    <DefaultSprite>k__BackingField: {fileID: 5720042066947213765, guid: 7f9f2c9f94ef04f3fa2b39871cae1ba5, type: 3}
-    <AttackSprite>k__BackingField: {fileID: 5557032066993493485, guid: feb464c455ab64e459c4dc5157f55704, type: 3}
+    <DefaultSprite>k__BackingField: {fileID: 5720042066947213765, guid: 7f9f2c9f94ef04f3fa2b39871cae1ba5,
+      type: 3}
+    <AttackSprite>k__BackingField: {fileID: 5557032066993493485, guid: feb464c455ab64e459c4dc5157f55704,
+      type: 3}
   _renderer: {fileID: 8247698068293842574}
   _animationDuration: 0.55
+--- !u!114 &-6712830331436611492
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6227973595769970845}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6521c6af82994f6faa412bb82172e481, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 3
+  componentEnabled: 0
