@@ -22,7 +22,8 @@ namespace PunchGear
 
         private void OnEnable()
         {
-            _rigidbody.AddForceX(-velocity);
+            float deltaTime = Time.fixedDeltaTime;
+            _rigidbody.AddForceX(-velocity / deltaTime);
         }
     }
 }
