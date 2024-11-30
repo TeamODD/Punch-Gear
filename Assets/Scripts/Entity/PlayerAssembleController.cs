@@ -94,7 +94,7 @@ namespace PunchGear.Entity
         private void OnGUI()
         {
             GUI.Label(new Rect(50, 50, 200, 100), $"isAssembleFrozen: {_isAssembleFrozen}", _style);
-            GUI.Label(new Rect(50, 150, 200, 100), $"isDisassembleFrozen: {_isDisassembleFrozen}", _style);
+            GUI.Label(new Rect(50, 100, 200, 100), $"isDisassembleFrozen: {_isDisassembleFrozen}", _style);
         }
 #endif
 

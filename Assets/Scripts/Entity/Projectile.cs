@@ -1,7 +1,6 @@
 using System.Collections;
 
 using PunchGear.Attributes;
-using PunchGear.Enemy;
 
 using UnityEngine;
 using UnityEngine.Pool;
@@ -36,6 +35,52 @@ namespace PunchGear.Entity
             _animator = GetComponent<Animator>();
         }
 
+        private void OnTriggerEnter2D(Collider2D collider)
+        {
+            OnCollisionEnter?.Invoke(collider);
+            GameObject target = collider.gameObject;
+            if (target.CompareTag("GameController"))
+            {
+                AssemblyPoint assemblyPoint = target.GetComponent<AssemblyPoint>();
+                if (assemblyPoint.Position != Position)
+                {
+                    return;
+                }
+                _canPlayerManipulate = true;
+            }
+            if (target.CompareTag("Nobility"))
+            {
+                if (Disassembled || _chaseEnemyAnimationCoroutine == null)
+                {
+                    return;
+                }
+                StopCoroutine(_chaseEnemyAnimationCoroutine);
+                ProjectilePool.Release(this);
+                Nobility nobility = EnemyOrigin.GetComponent<Nobility>();
+                nobility.Health -= 1;
+            }
+            if (target.CompareTag("Player"))
+            {
+                if (Disassembled || Assembled)
+                {
+                    return;
+                }
+                Player player = target.GetComponentInParent<Player>();
+                player.Health -= 1;
+                ProjectilePool.Release(this);
+            }
+        }
+
+        private void OnTriggerExit2D(Collider2D collider)
+        {
+            OnCollisionExit?.Invoke(collider);
+            GameObject target = collider.gameObject;
+            if (target.CompareTag("GameController"))
+            {
+                _canPlayerManipulate = false;
+            }
+        }
+
         public void OnEnable()
         {
             _canPlayerManipulate = false;
@@ -58,52 +103,6 @@ namespace PunchGear.Entity
             }
             StopCoroutine(_chaseEnemyAnimationCoroutine);
             _chaseEnemyAnimationCoroutine = null;
-        }
-
-        private void OnTriggerEnter2D(Collider2D collider)
-        {
-            OnCollisionEnter?.Invoke(collider);
-            GameObject target = collider.gameObject;
-            if (target.CompareTag("GameController"))
-            {
-                AssemblyPoint assemblyPoint = target.GetComponent<AssemblyPoint>();
-                if (assemblyPoint.Position != Position)
-                {
-                    return;
-                }
-                _canPlayerManipulate = true;
-            }
-            if (target.CompareTag("Nobility"))
-            {
-                if (Disassembled || _chaseEnemyAnimationCoroutine == null)
-                {
-                    return;
-                }
-                StopCoroutine(_chaseEnemyAnimationCoroutine);
-                ProjectilePool.Release(this);
-                EnemyObject enemyObject = EnemyOrigin.GetComponent<EnemyObject>();
-                enemyObject.Health -= 1;
-            }
-            if (target.CompareTag("Player"))
-            {
-                if (Disassembled || Assembled)
-                {
-                    return;
-                }
-                Player player = target.GetComponentInParent<Player>();
-                player.Health -= 1;
-                ProjectilePool.Release(this);
-            }
-        }
-
-        private void OnTriggerExit2D(Collider2D collider)
-        {
-            OnCollisionExit?.Invoke(collider);
-            GameObject target = collider.gameObject;
-            if (target.CompareTag("GameController"))
-            {
-                _canPlayerManipulate = false;
-            }
         }
 
         [field: ReadOnlyField]

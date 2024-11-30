@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
 
-using PunchGear.Enemy;
-
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -10,8 +8,6 @@ namespace PunchGear.Entity.UI
 {
     public class NobilityHealthIndicator : MonoBehaviour
     {
-        private EnemyObject _enemyObject;
-
         [FormerlySerializedAs("_targetIndicator")]
         [SerializeField]
         private Transform targetIndicator;
@@ -21,12 +17,14 @@ namespace PunchGear.Entity.UI
         [SerializeField]
         private float indicatorShrinkRate;
 
-        private Vector3 _originalScale;
+        private Nobility _enemyObject;
         private int _originalNobilityHealth;
+
+        private Vector3 _originalScale;
 
         private void Awake()
         {
-            _enemyObject = FindFirstObjectByType<EnemyObject>();
+            _enemyObject = FindFirstObjectByType<Nobility>();
             if (_enemyObject == null)
             {
                 throw new NullReferenceException("Cannot find enemy object");
