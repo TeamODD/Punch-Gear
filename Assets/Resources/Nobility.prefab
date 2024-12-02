@@ -76,8 +76,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -3
-  m_Sprite: {fileID: 5720042066947213765, guid: 7f9f2c9f94ef04f3fa2b39871cae1ba5,
-    type: 3}
+  m_Sprite: {fileID: 5720042066947213765, guid: 7f9f2c9f94ef04f3fa2b39871cae1ba5, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -97,6 +96,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1202030739752389643}
+  - component: {fileID: 1493406134308444074}
   - component: {fileID: 5374514856162228120}
   m_Layer: 0
   m_Name: Sprite Collider
@@ -120,6 +120,33 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6009869316668307268}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!50 &1493406134308444074
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4072609534683223279}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 4
 --- !u!70 &5374514856162228120
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -151,7 +178,7 @@ CapsuleCollider2D:
     serializedVersion: 2
     m_Bits: 4294967295
   m_IsTrigger: 0
-  m_UsedByEffector: 0
+  m_UsedByEffector: 1
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
@@ -167,7 +194,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6009869316668307268}
   - component: {fileID: 7054504799399088980}
-  - component: {fileID: 8301265952822378195}
   - component: {fileID: 2603671181179407559}
   - component: {fileID: -6712830331436611492}
   m_Layer: 0
@@ -212,22 +238,8 @@ MonoBehaviour:
   duration: 1
   term: 1.5
   smoothTime: 0.2
-  attackPatternProfile: {fileID: 11400000, guid: 0c08eb22fd7d64af8932c1499a65ce91,
-    type: 2}
+  attackPatternProfile: {fileID: 11400000, guid: 0c08eb22fd7d64af8932c1499a65ce91, type: 2}
   <Position>k__BackingField: 0
---- !u!114 &8301265952822378195
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6227973595769970845}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e14a04cc9cc24a7f9882842d12ffa5d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _healthPoint: 50
 --- !u!114 &2603671181179407559
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -241,10 +253,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _profile:
-    <DefaultSprite>k__BackingField: {fileID: 5720042066947213765, guid: 7f9f2c9f94ef04f3fa2b39871cae1ba5,
-      type: 3}
-    <AttackSprite>k__BackingField: {fileID: 5557032066993493485, guid: feb464c455ab64e459c4dc5157f55704,
-      type: 3}
+    <DefaultSprite>k__BackingField: {fileID: 5720042066947213765, guid: 7f9f2c9f94ef04f3fa2b39871cae1ba5, type: 3}
+    <AttackSprite>k__BackingField: {fileID: 5557032066993493485, guid: feb464c455ab64e459c4dc5157f55704, type: 3}
   _renderer: {fileID: 8247698068293842574}
   _animationDuration: 0.55
 --- !u!114 &-6712830331436611492
@@ -261,3 +271,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 3
   componentEnabled: 0
+  collider: {fileID: 5374514856162228120}

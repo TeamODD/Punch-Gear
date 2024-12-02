@@ -628,9 +628,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _healthPoint: 3
   _explosionPrefab: {fileID: 7030490335434594446}
-  <Position>k__BackingField: 0
+  collider: {fileID: 8043745943855820791}
   <DisassemblyCooldownIndicator>k__BackingField: {fileID: 7113122624116455236}
   <AssemblyCooldownIndicator>k__BackingField: {fileID: 6301297117182422897}
+  <Position>k__BackingField: 0
 --- !u!114 &1382015968895768485
 MonoBehaviour:
   m_ObjectHideFlags: 0

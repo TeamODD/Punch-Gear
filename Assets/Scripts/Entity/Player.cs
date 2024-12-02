@@ -16,28 +16,8 @@ namespace PunchGear.Entity
         [SerializeField]
         private GameObject _explosionPrefab;
 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-        private static void Initialize()
-        {
-            ExplosionAudioClip = Resources.Load<AudioClip>("Sound/explosion");
-        }
-
-        public int Health
-        {
-            get
-            {
-                return _healthPoint;
-            }
-            set
-            {
-                int previous = _healthPoint;
-                _healthPoint = value;
-                OnHealthChange?.Invoke(previous, _healthPoint);
-            }
-        }
-
-        [field: SerializeField]
-        public EntityPosition Position { get; set; }
+        [SerializeField]
+        private Collider2D collider;
 
         [field: SerializeField]
         public PlayerAssemblyCooldownIndicator DisassemblyCooldownIndicator { get; private set; }
@@ -51,12 +31,40 @@ namespace PunchGear.Entity
             OnHealthChange += HandleExplosion;
         }
 
+        private void Start()
+        {
+            ProjectileLauncher.Instance.OnProjectileCreated.AddListener(
+                projectile => projectile.OnCollisionEnter += HandleHealth);
+            ProjectileLauncher.Instance.OnProjectileDestroyed.AddListener(
+                projectile => projectile.OnCollisionEnter -= HandleHealth);
+        }
+
         private void OnDisable()
         {
             OnHealthChange -= HandleExplosion;
         }
 
+        public int Health
+        {
+            get => _healthPoint;
+            set
+            {
+                int previous = _healthPoint;
+                _healthPoint = value;
+                OnHealthChange?.Invoke(previous, _healthPoint);
+            }
+        }
+
         public event HealthChangeDelegate OnHealthChange;
+
+        [field: SerializeField]
+        public EntityPosition Position { get; set; }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+        private static void Initialize()
+        {
+            ExplosionAudioClip = Resources.Load<AudioClip>("Sound/explosion");
+        }
 
         private void HandleExplosion(int previousHealth, int currentHealth)
         {
@@ -73,6 +81,21 @@ namespace PunchGear.Entity
         {
             yield return new WaitForSecondsRealtime(seconds);
             _explosionPrefab.SetActive(false);
+        }
+
+        private void HandleHealth(GameObject origin, Collider2D collider)
+        {
+            if (collider.gameObject != this.collider.gameObject)
+            {
+                return;
+            }
+            Projectile projectileImpl = origin.GetComponent<Projectile>();
+            if (projectileImpl.State != ProjectileState.Launched)
+            {
+                return;
+            }
+            projectileImpl.ProjectilePool.Release(projectileImpl);
+            Health -= 1;
         }
     }
 }

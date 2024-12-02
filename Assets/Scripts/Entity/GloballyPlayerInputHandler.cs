@@ -126,18 +126,12 @@ namespace PunchGear.Entity
 
             public int Count
             {
-                get
-                {
-                    return _position;
-                }
+                get => _position;
             }
 
             public bool IsReadOnly
             {
-                get
-                {
-                    return false;
-                }
+                get => false;
             }
 
             public KeyCode this[int index]

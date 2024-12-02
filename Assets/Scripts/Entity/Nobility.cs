@@ -13,6 +13,9 @@ namespace PunchGear.Entity
         [SerializeField]
         private bool componentEnabled;
 
+        [SerializeField]
+        private Collider2D collider;
+
         private NobilityAnimationController _animationController;
         private EnemyPattern _enemyPattern;
 
@@ -20,6 +23,14 @@ namespace PunchGear.Entity
         {
             _animationController = GetComponent<NobilityAnimationController>();
             _enemyPattern = GetComponent<EnemyPattern>();
+        }
+
+        private void Start()
+        {
+            ProjectileLauncher.Instance.OnProjectileCreated.AddListener(
+                projectile => projectile.OnCollisionEnter += HandleHealth);
+            ProjectileLauncher.Instance.OnProjectileDestroyed.AddListener(
+                projectile => projectile.OnCollisionEnter -= HandleHealth);
         }
 
         private void OnEnable()
@@ -30,6 +41,25 @@ namespace PunchGear.Entity
         private void OnDisable()
         {
             componentEnabled = false;
+        }
+
+        private void HandleHealth(GameObject origin, Collider2D collider)
+        {
+            if (!componentEnabled)
+            {
+                return;
+            }
+            if (collider.gameObject != this.collider.gameObject)
+            {
+                return;
+            }
+            Projectile projectileImpl = origin.GetComponent<Projectile>();
+            if (projectileImpl.State != ProjectileState.Assembled)
+            {
+                return;
+            }
+            projectileImpl.ProjectilePool.Release(projectileImpl);
+            Health -= 1;
         }
     }
 }

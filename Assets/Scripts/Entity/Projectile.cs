@@ -22,6 +22,8 @@ namespace PunchGear.Entity
         public GameObject EnemyOrigin { get; set; }
 
         private Animator _animator;
+
+        private Camera _camera;
         private bool _canPlayerManipulate;
         private Coroutine _chaseEnemyAnimationCoroutine;
         private bool _isAssembleFrozen;
@@ -31,54 +33,28 @@ namespace PunchGear.Entity
 
         private void Awake()
         {
+            _camera = Camera.main;
             _rigidbody = GetComponent<Rigidbody2D>();
             _animator = GetComponent<Animator>();
         }
 
-        private void OnTriggerEnter2D(Collider2D collider)
+        private void FixedUpdate()
         {
-            OnCollisionEnter?.Invoke(collider);
-            GameObject target = collider.gameObject;
-            if (target.CompareTag("GameController"))
+            Vector2 viewPosition = _camera.WorldToViewportPoint(_rigidbody.position);
+            if (viewPosition.x < -1 || viewPosition.y < -1)
             {
-                AssemblyPoint assemblyPoint = target.GetComponent<AssemblyPoint>();
-                if (assemblyPoint.Position != Position)
-                {
-                    return;
-                }
-                _canPlayerManipulate = true;
-            }
-            if (target.CompareTag("Nobility"))
-            {
-                if (Disassembled || _chaseEnemyAnimationCoroutine == null)
-                {
-                    return;
-                }
-                StopCoroutine(_chaseEnemyAnimationCoroutine);
-                ProjectilePool.Release(this);
-                Nobility nobility = EnemyOrigin.GetComponent<Nobility>();
-                nobility.Health -= 1;
-            }
-            if (target.CompareTag("Player"))
-            {
-                if (Disassembled || Assembled)
-                {
-                    return;
-                }
-                Player player = target.GetComponentInParent<Player>();
-                player.Health -= 1;
                 ProjectilePool.Release(this);
             }
         }
 
+        private void OnTriggerEnter2D(Collider2D collider)
+        {
+            OnCollisionEnter?.Invoke(gameObject, collider);
+        }
+
         private void OnTriggerExit2D(Collider2D collider)
         {
-            OnCollisionExit?.Invoke(collider);
-            GameObject target = collider.gameObject;
-            if (target.CompareTag("GameController"))
-            {
-                _canPlayerManipulate = false;
-            }
+            OnCollisionExit?.Invoke(gameObject, collider);
         }
 
         public void OnEnable()
@@ -156,6 +132,11 @@ namespace PunchGear.Entity
             _rigidbody.gravityScale = 2f;
             _isAssembleFrozen = true;
             FreezeAssemble();
+        }
+
+        public void CanManipulate(bool canPlayerManipulate)
+        {
+            _canPlayerManipulate = canPlayerManipulate;
         }
 
         private void FreezeAssemble()
