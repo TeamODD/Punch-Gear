@@ -7,32 +7,22 @@ using UnityEngine;
 
 namespace PunchGear
 {
-    public class AssemblyPoint : MonoBehaviour, IColliderHolder
+    public class AssemblyPoint : MonoBehaviour
     {
         [field: SerializeField]
         public EntityPosition Position { get; private set; }
 
+        private readonly HashSet<IProjectile> _targets = new HashSet<IProjectile>();
+
         public bool EntersProjectile
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                return _targets.Count != 0;
-            }
+            get => _targets.Count != 0;
         }
-
-        public event CollisionEnterDelegate OnCollisionEnter;
-
-        public event CollisionExitDelegate OnCollisionExit;
-
-        private readonly HashSet<IProjectile> _targets = new HashSet<IProjectile>();
 
         public IEnumerable<IProjectile> ProjectileTargets
         {
-            get
-            {
-                return _targets;
-            }
+            get => _targets;
         }
 
         private void Awake()
@@ -40,31 +30,56 @@ namespace PunchGear
             EntityPositionHandler.Instance.SetPosition(this, Position);
         }
 
+        private void Start()
+        {
+            IProjectileLauncher launcher = ProjectileLauncher.Instance;
+            launcher.OnProjectileCreated.AddListener(
+                projectile =>
+                {
+                    projectile.OnCollisionEnter += HandleProjectileCollision;
+                    projectile.OnCollisionExit += HandleProjectileCollisionExit;
+                });
+            launcher.OnProjectileDestroyed.AddListener(
+                projectile =>
+                {
+                    projectile.OnCollisionEnter -= HandleProjectileCollision;
+                    projectile.OnCollisionExit -= HandleProjectileCollisionExit;
+                });
+        }
+
         private void OnDisable()
         {
             _targets.Clear();
         }
 
-        private void OnTriggerEnter2D(Collider2D collider)
+        private void HandleProjectileCollision(GameObject origin, Collider2D collision)
         {
-            GameObject target = collider.gameObject;
-            if (target.CompareTag("Projectile"))
+            if (collision.gameObject != gameObject)
             {
-                IProjectile projectile = target.GetComponent<IProjectile>();
-                _targets.Add(projectile);
+                return;
             }
-            OnCollisionEnter?.Invoke(collider);
+            Projectile projectileImpl = origin.GetComponent<Projectile>();
+            if (projectileImpl.Position != Position)
+            {
+                return;
+            }
+            projectileImpl.CanManipulate(true);
+            _targets.Add(projectileImpl);
         }
 
-        private void OnTriggerExit2D(Collider2D collider)
+        private void HandleProjectileCollisionExit(GameObject origin, Collider2D collision)
         {
-            GameObject target = collider.gameObject;
-            if (target.CompareTag("Projectile"))
+            if (collision.gameObject != gameObject)
             {
-                IProjectile projectile = target.GetComponent<IProjectile>();
-                _targets.Remove(projectile);
+                return;
             }
-            OnCollisionExit?.Invoke(collider);
+            Projectile projectileImpl = origin.GetComponent<Projectile>();
+            if (projectileImpl.Position != Position)
+            {
+                return;
+            }
+            projectileImpl.CanManipulate(false);
+            _targets.Remove(projectileImpl);
         }
     }
 }
