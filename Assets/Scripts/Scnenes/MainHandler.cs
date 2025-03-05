@@ -31,9 +31,12 @@ namespace PunchGear.Scenes
 
         private void Update()
         {
-            if (Input.GetKey(KeyCode.Escape))
+            if (Input.anyKeyDown)
             {
                 _tutorial.SetActive(false);
+            }
+            else if (Input.GetKey(KeyCode.Escape))
+            {
                 _option.SetActive(false);
             }
         }
