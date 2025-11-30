@@ -2185,7 +2185,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -6712830331436611492, guid: b1f87dac493f14beeaf86e14c3d5492e, type: 3}
       propertyPath: health
-      value: 25
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 5374514856162228120, guid: b1f87dac493f14beeaf86e14c3d5492e, type: 3}
       propertyPath: m_IsTrigger
@@ -2234,6 +2234,26 @@ PrefabInstance:
     - target: {fileID: 6227973595769970845, guid: b1f87dac493f14beeaf86e14c3d5492e, type: 3}
       propertyPath: m_Name
       value: Nobility
+      objectReference: {fileID: 0}
+    - target: {fileID: 7054504799399088980, guid: b1f87dac493f14beeaf86e14c3d5492e, type: 3}
+      propertyPath: fast
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7054504799399088980, guid: b1f87dac493f14beeaf86e14c3d5492e, type: 3}
+      propertyPath: slow
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7054504799399088980, guid: b1f87dac493f14beeaf86e14c3d5492e, type: 3}
+      propertyPath: term
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7054504799399088980, guid: b1f87dac493f14beeaf86e14c3d5492e, type: 3}
+      propertyPath: normal
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7054504799399088980, guid: b1f87dac493f14beeaf86e14c3d5492e, type: 3}
+      propertyPath: duration
+      value: 0.7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
